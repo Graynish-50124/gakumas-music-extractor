@@ -8,7 +8,11 @@
 - 学マスPC版を一度以上起動し、最新データまで更新済みであること
 - 学マスのデータが通常どおりローカルPCに保存されていること
 
-配布版にはPython 3.12、PySide6、GkmasObjectManager、vgmstream、FFmpeg、UnityPy/FMODと必要なPythonパッケージを同梱しています。Pythonや外部ツールを別途インストールする必要はありません。
+配布版にはPython 3.12、PySide6、GkmasObjectManager、vgmstream、FFmpeg、UnityPyと必要なPythonパッケージを同梱しています。Pythonや外部ツールを別途インストールする必要はありません。Unity AudioClipもvgmstreamで変換し、FMODランタイムは同梱していません。
+
+## ダウンロード
+
+[GitHub Releases](https://github.com/S0R4-50124/gakumas-music-extractor/releases)から最新版を取得できます。通常はone-folder版を推奨します。ダウンロード後は同梱の`SHA256SUMS.txt`でファイルのSHA-256を確認できます。
 
 ## どちらを使うか
 

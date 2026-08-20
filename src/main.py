@@ -8,7 +8,7 @@ import traceback
 from collections import Counter
 from pathlib import Path
 
-from app_bootstrap import component_paths, configure_runtime
+from app_bootstrap import bundle_root, component_paths, configure_runtime
 
 
 configure_runtime()
@@ -61,6 +61,22 @@ def run_self_test(report_path: str | None) -> int:
     for name, path in paths.items():
         if not path or not path.is_file():
             errors.append(f"{name} が見つかりません")
+    bundled_fmod: list[str] = []
+    if getattr(sys, "frozen", False):
+        runtime_root = bundle_root()
+        for path in runtime_root.rglob("*"):
+            if not path.is_file():
+                continue
+            name = path.name.casefold()
+            is_fmod_runtime = name == "fmod.dll" or (
+                name.startswith("libfmod")
+                and path.suffix.casefold() in {".so", ".dylib"}
+            )
+            if is_fmod_runtime:
+                bundled_fmod.append(str(path.relative_to(runtime_root)))
+    result["bundled_fmod_runtime_files"] = bundled_fmod
+    if bundled_fmod:
+        errors.append("配布物にFMODランタイムが含まれています")
     result["errors"] = errors
     result["ok"] = not errors
     _emit_report(result, report_path)

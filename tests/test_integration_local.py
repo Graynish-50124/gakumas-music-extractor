@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import wave
 from pathlib import Path
 
 import pytest
@@ -94,7 +95,14 @@ def test_real_live_true_wav_extraction(tmp_path: Path) -> None:
     )
     wav = tmp_path / f"{live.title}＿姫崎莉波［ライブ］.wav"
     assert wav in written and wav.read_bytes()[:4] in {b"RIFF", b"RF64"}
+    with wave.open(str(wav), "rb") as stream:
+        assert stream.getnchannels() == 2
+        assert stream.getframerate() == 48_000
+        assert stream.getnframes() > 48_000 * 60
     assert read_wav_info_tags(wav.read_bytes()) == {
         "INAM": live.title,
         "IART": "姫崎莉波",
     }
+    from UnityPy.export import AudioClipConverter
+
+    assert AudioClipConverter.pyfmodex is None

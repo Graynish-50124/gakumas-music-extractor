@@ -1,7 +1,13 @@
 from __future__ import annotations
 
+import io
+import subprocess
+import tempfile
+import zipfile
 from dataclasses import dataclass
 from pathlib import Path
+
+import UnityPy
 
 from GkmasObjectManager.const import UNITY_SIGNATURE
 from GkmasObjectManager.object.deobfuscate import GkmasAssetBundleDeobfuscator
@@ -146,8 +152,144 @@ def verify_audio_components() -> dict[str, Path | None]:
     return component_paths()
 
 
+def _run_audio_tool(command: list[str], tool_name: str) -> None:
+    completed = subprocess.run(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+        creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+    )
+    if completed.returncode == 0:
+        return
+    detail = (completed.stderr or completed.stdout).decode("utf-8", errors="replace").strip()
+    if len(detail) > 800:
+        detail = detail[-800:]
+    suffix = f": {detail}" if detail else ""
+    raise AudioConversionError(f"{tool_name}による音声デコードに失敗しました{suffix}")
+
+
+def _decode_with_vgmstream(raw: bytes) -> list[bytes]:
+    vgmstream = component_paths()["vgmstream"]
+    if not vgmstream:
+        raise ComponentMissingError("ライブWAV変換に必要なvgmstreamが見つかりません")
+
+    with tempfile.TemporaryDirectory(prefix="gakumas-vgmstream-") as temp_dir:
+        work = Path(temp_dir)
+        source = work / "clip.fsb"
+        source.write_bytes(raw)
+        _run_audio_tool(
+            [
+                str(vgmstream),
+                "-S",
+                "0",
+                "-i",
+                "-o",
+                str(work / "?s.wav"),
+                str(source),
+            ],
+            "vgmstream",
+        )
+        outputs = [path.read_bytes() for path in sorted(work.glob("*.wav"))]
+
+    if not outputs:
+        raise AudioConversionError("vgmstreamのWAVデコード結果が空です")
+    if any(data[:4] not in {b"RIFF", b"RF64"} for data in outputs):
+        raise AudioConversionError("vgmstreamのWAV出力形式を確認できません")
+    return outputs
+
+
+def _decode_with_ffmpeg(raw: bytes, suffix: str) -> list[bytes]:
+    ffmpeg = component_paths()["ffmpeg"]
+    if not ffmpeg:
+        raise ComponentMissingError("ライブWAV変換に必要なFFmpegが見つかりません")
+
+    with tempfile.TemporaryDirectory(prefix="gakumas-ffmpeg-") as temp_dir:
+        work = Path(temp_dir)
+        source = work / f"clip{suffix}"
+        output = work / "clip.wav"
+        source.write_bytes(raw)
+        _run_audio_tool(
+            [
+                str(ffmpeg),
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-y",
+                "-i",
+                str(source),
+                "-map",
+                "0:a:0",
+                "-map_metadata",
+                "-1",
+                "-c:a",
+                "pcm_s16le",
+                str(output),
+            ],
+            "FFmpeg",
+        )
+        data = output.read_bytes() if output.exists() else b""
+
+    if data[:4] not in {b"RIFF", b"RF64"}:
+        raise AudioConversionError("FFmpegのWAV出力形式を確認できません")
+    return [data]
+
+
+def _decode_unity_audio_blob(raw: bytes) -> list[bytes]:
+    if len(raw) >= 12 and raw[:4] in {b"RIFF", b"RF64"} and raw[8:12] == b"WAVE":
+        return [raw]
+    if raw.startswith(b"OggS"):
+        return _decode_with_ffmpeg(raw, ".ogg")
+    if len(raw) >= 8 and raw[4:8] == b"ftyp":
+        return _decode_with_ffmpeg(raw, ".m4a")
+    return _decode_with_vgmstream(raw)
+
+
+def _pack_wav_files(samples: list[bytes]) -> ConvertedAudio:
+    if len(samples) == 1:
+        return ConvertedAudio(samples[0], "audio/wav")
+    with io.BytesIO() as buffer:
+        with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for index, sample in enumerate(samples, start=1):
+                info = zipfile.ZipInfo(f"sample_{index:02d}.wav", date_time=(1980, 1, 1, 0, 0, 0))
+                info.compress_type = zipfile.ZIP_DEFLATED
+                archive.writestr(info, sample)
+        return ConvertedAudio(buffer.getvalue(), "application/zip")
+
+
+def _decode_unity_bundle_to_wav(prepared: bytes) -> ConvertedAudio:
+    try:
+        environment = UnityPy.load(prepared)
+        readers = [
+            reader
+            for reader in environment.container.values()
+            if getattr(getattr(reader, "type", None), "name", "") == "AudioClip"
+        ]
+        if not readers:
+            readers = [
+                reader
+                for reader in environment.objects
+                if getattr(getattr(reader, "type", None), "name", "") == "AudioClip"
+            ]
+        if not readers:
+            raise AudioConversionError("ライブ音源AssetBundleにAudioClipがありません")
+
+        samples: list[bytes] = []
+        for reader in readers:
+            clip = reader.read()
+            raw_audio = bytes(getattr(clip, "m_AudioData", b""))
+            if not raw_audio:
+                raise AudioConversionError("ライブ音源AudioClipのデータが空です")
+            samples.extend(_decode_unity_audio_blob(raw_audio))
+        return _pack_wav_files(samples)
+    except AudioConversionError:
+        raise
+    except Exception as exc:
+        raise AudioConversionError(f"ライブ音源AudioClipの解析に失敗しました: {exc}") from exc
+
+
 def decode_game_audio_to_wav(asset: AssetRef, raw: bytes) -> ConvertedAudio:
-    """Decode an AWB/ACB or Unity live AudioClip through GOM's proven handlers."""
+    """Decode AWB/ACB through GOM and Unity AudioClip data through vgmstream."""
 
     if asset.extension in {"awb", "acb"} and not component_paths()["vgmstream"]:
         raise ComponentMissingError("WAV変換に必要なvgmstreamが見つかりません")
@@ -158,6 +300,9 @@ def decode_game_audio_to_wav(asset: AssetRef, raw: bytes) -> ConvertedAudio:
         prepared = GkmasAssetBundleDeobfuscator(obj._deobf_key).process(prepared)
         if not prepared.startswith(UNITY_SIGNATURE):
             raise AudioConversionError("ライブ音源AssetBundleの復号に失敗しました")
+
+    if asset.object_type == "assetbundle":
+        return _decode_unity_bundle_to_wav(prepared)
 
     obj._reporter = _ConversionReporter()
     obj._media = None

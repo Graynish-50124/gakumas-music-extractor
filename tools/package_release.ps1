@@ -30,6 +30,7 @@ New-Item -ItemType Directory -Force -Path $StagingRoot | Out-Null
 
 $Docs = @(
     'README.md',
+    'CHANGELOG.md',
     'VALIDATION.md',
     'LICENSE',
     'LICENSE.md',
@@ -57,6 +58,12 @@ foreach ($Name in @('src', 'config', 'tests', 'tools')) {
 }
 New-Item -ItemType Directory -Force -Path (Join-Path $SourceStage 'vendor') | Out-Null
 Copy-Item -LiteralPath (Join-Path $ProjectRoot 'vendor\GkmasObjectManager') -Destination (Join-Path $SourceStage 'vendor\GkmasObjectManager') -Recurse
+foreach ($Name in @('vgmstream-linux', 'vgmstream-mac')) {
+    $NonWindowsBinary = Join-Path $SourceStage "vendor\GkmasObjectManager\bin\vgmstream\$Name"
+    if (Test-Path -LiteralPath $NonWindowsBinary) {
+        Remove-VerifiedReleasePath $NonWindowsBinary
+    }
+}
 New-Item -ItemType Directory -Force -Path (Join-Path $SourceStage 'vendor\ffmpeg') | Out-Null
 foreach ($Name in @('LICENSE', 'README.txt')) {
     $Source = Join-Path $ProjectRoot "vendor\ffmpeg\$Name"

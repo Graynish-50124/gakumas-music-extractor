@@ -14,12 +14,17 @@ vgmstream_windows = [
     for path in vgmstream_dir.iterdir()
     if path.is_file() and path.name not in {"vgmstream-linux", "vgmstream-mac"}
 ]
+unitypy_data = [
+    (source, destination)
+    for source, destination in collect_data_files("UnityPy")
+    if "fmod" not in source.casefold()
+]
 datas = [
     (str(project / "config"), "config"),
     (str(vendor / "ffmpeg" / "bin" / "ffmpeg.exe"), "ffmpeg/bin"),
     (str(vendor / "ffmpeg" / "LICENSE"), "ffmpeg"),
     (str(project / "LICENSE"), "."),
-] + vgmstream_windows + collect_data_files("archspec") + collect_data_files("UnityPy")
+] + vgmstream_windows + collect_data_files("archspec") + unitypy_data
 hiddenimports = collect_submodules("GkmasObjectManager") + collect_submodules("UnityPy")
 
 a = Analysis(
@@ -31,7 +36,10 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=["flask", "tkinter", "pandas", "numpy", "pytest", "_pytest"],
+    excludes=[
+        "flask", "tkinter", "pandas", "numpy", "pytest", "_pytest",
+        "pyfmodex", "fmod_toolkit",
+    ],
     noarchive=False,
     optimize=1,
 )
