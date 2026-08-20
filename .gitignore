@@ -1,0 +1,30 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build and runtime artifacts
+/build/
+/dist/
+/release/
+/work/
+*.log
+self-test.json
+
+# Downloaded FFmpeg binaries (retrieve with tools/fetch_ffmpeg.ps1)
+/vendor/ffmpeg/bin/
+/vendor/GkmasObjectManager/bin/vgmstream/vgmstream-linux
+/vendor/GkmasObjectManager/bin/vgmstream/vgmstream-mac
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
