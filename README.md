@@ -12,7 +12,7 @@
 
 ## ダウンロード
 
-[GitHub Releases](https://github.com/S0R4-50124/gakumas-music-extractor/releases)から最新版を取得できます。通常はone-folder版を推奨します。ダウンロード後は同梱の`SHA256SUMS.txt`でファイルのSHA-256を確認できます。
+[GitHub Releases](https://github.com/Graynish-50124/gakumas-music-extractor/releases)から最新版を取得できます。通常はone-folder版を推奨します。ダウンロード後は同梱の`SHA256SUMS.txt`でファイルのSHA-256を確認できます。
 
 ## どちらを使うか
 
