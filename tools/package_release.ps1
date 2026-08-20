@@ -51,44 +51,10 @@ foreach ($Name in $Docs) {
     Copy-Item -LiteralPath (Join-Path $ProjectRoot $Name) -Destination (Join-Path $OnefileStage $Name)
 }
 
-$SourceStage = Join-Path $StagingRoot 'source\GakumasMusicExtractor-source'
-New-Item -ItemType Directory -Force -Path $SourceStage | Out-Null
-foreach ($Name in @('src', 'config', 'tests', 'tools')) {
-    Copy-Item -LiteralPath (Join-Path $ProjectRoot $Name) -Destination (Join-Path $SourceStage $Name) -Recurse
-}
-New-Item -ItemType Directory -Force -Path (Join-Path $SourceStage 'vendor') | Out-Null
-Copy-Item -LiteralPath (Join-Path $ProjectRoot 'vendor\GkmasObjectManager') -Destination (Join-Path $SourceStage 'vendor\GkmasObjectManager') -Recurse
-foreach ($Name in @('vgmstream-linux', 'vgmstream-mac')) {
-    $NonWindowsBinary = Join-Path $SourceStage "vendor\GkmasObjectManager\bin\vgmstream\$Name"
-    if (Test-Path -LiteralPath $NonWindowsBinary) {
-        Remove-VerifiedReleasePath $NonWindowsBinary
-    }
-}
-New-Item -ItemType Directory -Force -Path (Join-Path $SourceStage 'vendor\ffmpeg') | Out-Null
-foreach ($Name in @('LICENSE', 'README.txt')) {
-    $Source = Join-Path $ProjectRoot "vendor\ffmpeg\$Name"
-    if (Test-Path -LiteralPath $Source) {
-        Copy-Item -LiteralPath $Source -Destination (Join-Path $SourceStage "vendor\ffmpeg\$Name")
-    }
-}
-foreach ($Name in @(
-    'build.ps1',
-    'run.ps1',
-    'requirements.txt',
-    'GakumasMusicExtractor-onedir.spec',
-    'GakumasMusicExtractor-onefile.spec'
-) + $Docs) {
-    Copy-Item -LiteralPath (Join-Path $ProjectRoot $Name) -Destination (Join-Path $SourceStage $Name)
-}
-Get-ChildItem -LiteralPath $SourceStage -Recurse -Directory -Filter '__pycache__' | ForEach-Object {
-    Remove-VerifiedReleasePath $_.FullName
-}
-Get-ChildItem -LiteralPath $SourceStage -Recurse -File -Filter '*.pyc' | Remove-Item -Force
 
 $Archives = @(
     @{ Path = Join-Path $ReleaseRoot 'GakumasMusicExtractor-one-folder.zip'; Source = $OnedirStage },
-    @{ Path = Join-Path $ReleaseRoot 'GakumasMusicExtractor-one-file.zip'; Source = $OnefileStage },
-    @{ Path = Join-Path $ReleaseRoot 'GakumasMusicExtractor-source.zip'; Source = $SourceStage }
+    @{ Path = Join-Path $ReleaseRoot 'GakumasMusicExtractor-one-file.zip'; Source = $OnefileStage }
 )
 foreach ($Archive in $Archives) {
     if (Test-Path -LiteralPath $Archive.Path) {
@@ -96,17 +62,14 @@ foreach ($Archive in $Archives) {
     }
     Compress-Archive -LiteralPath $Archive.Source -DestinationPath $Archive.Path -CompressionLevel Optimal
 }
-$LegacyDirectExe = Join-Path $ReleaseRoot 'GakumasMusicExtractor.exe'
-Remove-VerifiedReleasePath $LegacyDirectExe
-
-$HashTargets = @($Archives.Path)
-$HashLines = $HashTargets | ForEach-Object {
-    $Item = Get-Item -LiteralPath $_
-    $Hash = (Get-FileHash -LiteralPath $Item.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-    "$Hash  $($Item.Name)"
+$LegacyArtifacts = @(
+    Join-Path $ReleaseRoot 'GakumasMusicExtractor.exe'
+    Join-Path $ReleaseRoot 'GakumasMusicExtractor-source.zip'
+    Join-Path $ReleaseRoot 'SHA256SUMS.txt'
+)
+foreach ($Path in $LegacyArtifacts) {
+    Remove-VerifiedReleasePath $Path
 }
-$HashFile = Join-Path $ReleaseRoot 'SHA256SUMS.txt'
-Set-Content -LiteralPath $HashFile -Value $HashLines -Encoding ascii
 
 Remove-VerifiedReleasePath $StagingRoot
-@($HashTargets) + $HashFile | ForEach-Object { Get-Item -LiteralPath $_ }
+$Archives.Path | ForEach-Object { Get-Item -LiteralPath $_ }
