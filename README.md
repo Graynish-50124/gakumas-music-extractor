@@ -25,7 +25,7 @@
 
 ### one-file版
 
-`GakumasMusicExtractor.exe`だけで起動できます。初回を含む各起動時に内蔵ランタイムを一時フォルダへ展開するため、one-folder版より起動に時間がかかります。署名のない自作EXEなので、Windows SmartScreenやセキュリティ製品が確認を表示する場合があります。
+`GakumasMusicExtractor-one-file.zip`を展開し、中の`GakumasMusicExtractor.exe`を起動します。アプリ本体はこのEXEだけで動作します。初回を含む各起動時に内蔵ランタイムを一時フォルダへ展開するため、one-folder版より起動に時間がかかります。署名のない自作EXEなので、Windows SmartScreenやセキュリティ製品が確認を表示する場合があります。
 
 ## 基本的な使い方
 

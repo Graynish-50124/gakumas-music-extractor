@@ -96,10 +96,10 @@ foreach ($Archive in $Archives) {
     }
     Compress-Archive -LiteralPath $Archive.Source -DestinationPath $Archive.Path -CompressionLevel Optimal
 }
-$DirectExe = Join-Path $ReleaseRoot 'GakumasMusicExtractor.exe'
-Copy-Item -LiteralPath $OnefileBuilt -Destination $DirectExe -Force
+$LegacyDirectExe = Join-Path $ReleaseRoot 'GakumasMusicExtractor.exe'
+Remove-VerifiedReleasePath $LegacyDirectExe
 
-$HashTargets = @($Archives.Path) + $DirectExe
+$HashTargets = @($Archives.Path)
 $HashLines = $HashTargets | ForEach-Object {
     $Item = Get-Item -LiteralPath $_
     $Hash = (Get-FileHash -LiteralPath $Item.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
