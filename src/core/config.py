@@ -39,6 +39,7 @@ class AppSettings:
     default_awb: bool = True
     default_mp3: bool = False
     default_acb: bool = False
+    default_artwork: bool = True
     filename_format: str = FILENAME_TITLE_CHARACTER
     auto_scan: bool = True
     online_fallback: bool = True

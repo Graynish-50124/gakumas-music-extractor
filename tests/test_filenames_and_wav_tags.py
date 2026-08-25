@@ -3,7 +3,16 @@ from __future__ import annotations
 import io
 import wave
 
-from core.audio import read_wav_info_tags, write_wav_info_tags
+from mutagen.id3 import ID3
+from mutagen.wave import WAVE
+
+from core.audio import (
+    read_mp3_embedded_artwork,
+    read_wav_embedded_artwork,
+    read_wav_info_tags,
+    write_mp3_tags,
+    write_wav_info_tags,
+)
 from core.extractor import ExtractionEngine
 from core.models import (
     FILENAME_ORIGINAL,
@@ -35,6 +44,9 @@ def _wav_with_album() -> bytes:
     return bytes(data)
 
 
+PNG_ARTWORK = b"\x89PNG\r\n\x1a\n" + b"test-cover-art"
+
+
 def _asset(name: str = "sud_music_general_amao-001-amao_game.awb") -> AssetRef:
     return AssetRef(name, 1, name, 0, "", "", "resource", object())
 
@@ -62,7 +74,12 @@ def _group(
 
 def test_wav_title_and_artist_tags_preserve_other_info() -> None:
     original = _wav_with_album()
-    tagged = write_wav_info_tags(original, title="Fluorite", artist="有村麻央")
+    tagged = write_wav_info_tags(
+        original,
+        title="Fluorite",
+        artist="有村麻央",
+        artwork=PNG_ARTWORK,
+    )
     assert read_wav_info_tags(tagged) == {
         "IPRD": "既存アルバム",
         "INAM": "Fluorite",
@@ -70,6 +87,8 @@ def test_wav_title_and_artist_tags_preserve_other_info() -> None:
     }
     assert "有村麻央".encode("cp932") in tagged
     assert "有村麻央".encode("utf-8") not in tagged
+    assert read_wav_embedded_artwork(tagged) == PNG_ARTWORK
+    assert not WAVE(io.BytesIO(tagged)).tags.getall("TALB")
     with wave.open(io.BytesIO(tagged), "rb") as wav:
         assert wav.getnframes() == 16
         assert wav.readframes(16) == b"\x00\x00" * 16
@@ -79,6 +98,22 @@ def test_wav_title_and_artist_tags_preserve_other_info() -> None:
     assert read_wav_info_tags(updated)["IART"] == "花海咲季"
     assert updated.count(b"INAM") == 1
     assert updated.count(b"IART") == 1
+    assert read_wav_embedded_artwork(updated) == PNG_ARTWORK
+
+
+def test_mp3_title_artist_and_cover_art_tags() -> None:
+    original = b"\xff\xfb\x90\x64" + b"\x00" * 256
+    tagged = write_mp3_tags(
+        original,
+        title="Fluorite",
+        artist="有村麻央",
+        artwork=PNG_ARTWORK,
+    )
+    tags = ID3(io.BytesIO(tagged))
+    assert str(tags["TIT2"]) == "Fluorite"
+    assert str(tags["TPE1"]) == "有村麻央"
+    assert not tags.getall("TALB")
+    assert read_mp3_embedded_artwork(tagged) == PNG_ARTWORK
 
 
 def test_three_filename_formats_and_live_marker() -> None:

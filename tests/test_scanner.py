@@ -37,16 +37,20 @@ def test_groups_formats_live_unit_inst_and_future_number() -> None:
             FakeObject(5, "sud_music_general_all-019-zzzz_game.awb"),
             FakeObject(6, "sud_music_general_unit-123-newunit_game-inst.awb"),
             FakeObject(7, "sud_music_live_all-018-hrnm_normal-001.unity3d", True),
+            FakeObject(8, "img_general_music_jacket_all-hrnm-018.png"),
+            FakeObject(9, "img_general_music_jacket_unit-newunit-123.png"),
         ]
     )
     groups = scan_music_assets(manifest, {"all-018/hrnm": "ねぇ、言っちゃうよ。"})
     vocal = next(group for group in groups if group.base_name.endswith("all-018-hrnm_game"))
     assert set(vocal.assets) == {"ACB", "AWB", "MP3"}
     assert vocal.title == "ねぇ、言っちゃうよ。"
+    assert vocal.artwork and vocal.artwork.name == "img_general_music_jacket_all-hrnm-018.png"
     assert len(vocal.related_live_keys) == 2
     true_live = next(group for group in groups if group.data_type == KIND_LIVE and group.version == "true-001")
     short_live = next(group for group in groups if group.data_type == KIND_LIVE and group.version == "normal-001")
     assert not true_live.is_short_version
+    assert true_live.artwork == vocal.artwork
     assert short_live.is_short_version
     normal_catalog = filter_groups(groups, short_version=False)
     expanded = ExtractionEngine(None)._expand_live([vocal], normal_catalog)
@@ -56,6 +60,7 @@ def test_groups_formats_live_unit_inst_and_future_number() -> None:
     unit = next(group for group in groups if group.data_type == KIND_UNIT)
     assert unit.internal_id == "unit-123"
     assert unit.singing == SINGING_INST
+    assert unit.artwork and unit.artwork.name == "img_general_music_jacket_unit-newunit-123.png"
 
 
 def test_filters_search_character_and_kind() -> None:

@@ -118,6 +118,7 @@ class ScanWorker(QObject):
             self.log.emit(f"Manifest復号・解析成功: Revision {info.revision}")
             groups = scan_music_assets(manifest, self.song_names)
             self.log.emit(f"音楽アセットをグループ化: {len(groups):,}件")
+            self.log.emit(f"アルバムアート対応: {sum(group.has_artwork for group in groups):,}件")
             self.finished.emit(ScanResult(manifest=manifest, info=info, groups=groups))
         except Exception as exc:
             message = str(exc) if isinstance(exc, ManifestError) else "Manifestの読み込みに失敗しました"
@@ -170,7 +171,7 @@ class ExtractionWorker(QObject):
 class MainWindow(QMainWindow):
     COLUMNS = (
         "選択", "曲ID", "曲名", "キャラクター", "種類", "歌唱", "バージョン",
-        "短縮版", "AWB", "MP3", "ACB", "Live",
+        "短縮版", "AWB", "MP3", "ACB", "Live", "ジャケット",
     )
 
     def __init__(
@@ -343,7 +344,7 @@ class MainWindow(QMainWindow):
             "選択セル内のどこでもクリックできます。Shift+クリックで範囲選択、"
             "表をドラッグすると青い範囲だけを連続選択できます。"
         )
-        for column, width in enumerate((72, 115, 250, 175, 115, 85, 105, 75, 52, 52, 52, 52)):
+        for column, width in enumerate((72, 115, 250, 175, 115, 85, 105, 75, 52, 52, 52, 52, 82)):
             self.table.setColumnWidth(column, width)
         splitter.addWidget(self.table)
 
@@ -506,6 +507,7 @@ class MainWindow(QMainWindow):
                 "○" if "MP3" in group.assets else "—",
                 "○" if "ACB" in group.assets else "—",
                 "○" if group.has_live else "—",
+                "○" if group.has_artwork else "—",
             )
             self.table.setItem(row, 0, check)
             for column, value in enumerate(values, start=1):
@@ -676,12 +678,20 @@ class MainWindow(QMainWindow):
         assets = "\n".join(
             f"{fmt}: {asset.name} ({asset.size:,} bytes)" for fmt, asset in sorted(group.assets.items())
         )
+        artwork = (
+            f"{group.artwork.name} ({group.artwork.size:,} bytes)"
+            if group.artwork
+            else "なし"
+        )
         live = "\n".join(group.related_live_keys) or "なし"
         box = QMessageBox(self)
         box.setWindowTitle("楽曲詳細")
         box.setText(f"{group.title or group.internal_id}\n{group.data_type} / {group.singing} / {group.version}")
         short_label = "はい" if group.is_short_version else ("対象外" if group.data_type == KIND_BGM else "いいえ")
-        box.setInformativeText(f"短縮版: {short_label}\n\n利用可能データ:\n{assets}\n\n関連ライブ:\n{live}")
+        box.setInformativeText(
+            f"短縮版: {short_label}\n\n利用可能データ:\n{assets}"
+            f"\n\nアルバムアート:\n{artwork}\n\n関連ライブ:\n{live}"
+        )
         box.exec()
 
     @Slot()

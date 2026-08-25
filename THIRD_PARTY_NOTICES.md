@@ -12,6 +12,7 @@ Gakumas Music Extractorのスタンドアロン配布物には、次の第三者
 | cryptography | Apache-2.0 またはBSD-3-Clause | Manifest復号 |
 | protobuf | BSD-3-Clause | Manifest解析 |
 | requests | Apache-2.0 | オンライン取得 |
+| Mutagen | GPL-2.0-or-later | WAV／MP3のID3タグとアルバムアート埋め込み |
 | Pillow | MIT-CMU | UnityPy依存 |
 | pydub | MIT | 音声処理 |
 | PyYAML | MIT | GkmasObjectManager依存 |

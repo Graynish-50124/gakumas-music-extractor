@@ -5,6 +5,7 @@ requests>=2.32
 rich>=13
 PyYAML>=6
 UnityPy<=1.10.18
+mutagen>=1.47,<2
 Pillow>=10
 pydub>=0.25.1
 pyinstaller>=6.10

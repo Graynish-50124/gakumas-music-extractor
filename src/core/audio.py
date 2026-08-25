@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import UnityPy
+from mutagen.id3 import APIC, ID3, ID3NoHeaderError, TIT2, TPE1
+from mutagen.wave import WAVE
 
 from GkmasObjectManager.const import UNITY_SIGNATURE
 from GkmasObjectManager.object.deobfuscate import GkmasAssetBundleDeobfuscator
@@ -83,8 +85,97 @@ def read_wav_info_tags(data: bytes) -> dict[str, str]:
     return result
 
 
-def write_wav_info_tags(data: bytes, *, title: str, artist: str) -> bytes:
-    """Set only title/artist RIFF INFO fields and preserve every other WAV chunk/tag."""
+def detect_image_mime(data: bytes) -> str:
+    if data.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "image/png"
+    if data.startswith(b"\xff\xd8\xff"):
+        return "image/jpeg"
+    if len(data) >= 12 and data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return "image/webp"
+    raise AudioConversionError("アルバムアートの画像形式を確認できません")
+
+
+def _update_id3(tags: ID3, *, title: str, artist: str, artwork: bytes | None) -> None:
+    tags.delall("TIT2")
+    tags.delall("TPE1")
+    if title:
+        tags.add(TIT2(encoding=1, text=[title]))
+    if artist:
+        tags.add(TPE1(encoding=1, text=[artist]))
+    if artwork is not None:
+        tags.delall("APIC")
+        tags.add(
+            APIC(
+                encoding=1,
+                mime=detect_image_mime(artwork),
+                type=3,
+                desc="Cover",
+                data=artwork,
+            )
+        )
+
+
+def _write_wav_id3(data: bytes, *, title: str, artist: str, artwork: bytes) -> bytes:
+    stream = io.BytesIO(data)
+    try:
+        wave = WAVE(stream)
+        if wave.tags is None:
+            wave.add_tags()
+        _update_id3(wave.tags, title=title, artist=artist, artwork=artwork)
+        wave.save(stream, v2_version=3)
+        return stream.getvalue()
+    except Exception as exc:
+        raise AudioConversionError(f"WAVへのアルバムアート埋め込みに失敗しました: {exc}") from exc
+
+
+def _id3_front_cover(tags: ID3 | None) -> bytes | None:
+    if tags is None:
+        return None
+    pictures = tags.getall("APIC")
+    if not pictures:
+        return None
+    preferred = next((picture for picture in pictures if int(picture.type) == 3), pictures[0])
+    return bytes(preferred.data)
+
+
+def read_wav_embedded_artwork(data: bytes) -> bytes | None:
+    try:
+        return _id3_front_cover(WAVE(io.BytesIO(data)).tags)
+    except Exception as exc:
+        raise AudioConversionError(f"WAVのアルバムアートを読み込めません: {exc}") from exc
+
+
+def write_mp3_tags(data: bytes, *, title: str, artist: str, artwork: bytes) -> bytes:
+    stream = io.BytesIO(data)
+    try:
+        try:
+            tags = ID3(stream)
+        except ID3NoHeaderError:
+            tags = ID3()
+        _update_id3(tags, title=title, artist=artist, artwork=artwork)
+        tags.save(stream, v2_version=3)
+        return stream.getvalue()
+    except Exception as exc:
+        raise AudioConversionError(f"MP3へのアルバムアート埋め込みに失敗しました: {exc}") from exc
+
+
+def read_mp3_embedded_artwork(data: bytes) -> bytes | None:
+    try:
+        return _id3_front_cover(ID3(io.BytesIO(data)))
+    except ID3NoHeaderError:
+        return None
+    except Exception as exc:
+        raise AudioConversionError(f"MP3のアルバムアートを読み込めません: {exc}") from exc
+
+
+def write_wav_info_tags(
+    data: bytes,
+    *,
+    title: str,
+    artist: str,
+    artwork: bytes | None = None,
+) -> bytes:
+    """Set title/artist and optional cover art while preserving unrelated tags."""
 
     if len(data) < 12 or data[:4] not in {b"RIFF", b"RF64"} or data[8:12] != b"WAVE":
         raise AudioConversionError("WAVのRIFFヘッダーを確認できません")
@@ -128,7 +219,10 @@ def write_wav_info_tags(data: bytes, *, title: str, artist: str) -> bytes:
                 result[cursor + 8 : cursor + 16] = (len(result) - 8).to_bytes(8, "little")
                 break
             cursor += 8 + chunk_size + (chunk_size & 1)
-    return bytes(result)
+    output = bytes(result)
+    if artwork is not None:
+        output = _write_wav_id3(output, title=title, artist=artist, artwork=artwork)
+    return output
 
 
 class _ConversionReporter:

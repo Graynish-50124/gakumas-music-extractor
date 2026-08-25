@@ -48,11 +48,13 @@ def run_self_test(report_path: str | None) -> int:
         import GkmasObjectManager
         import cryptography
         import google.protobuf
+        import mutagen
 
         result["PySide6"] = PySide6.__version__
         result["GkmasObjectManager"] = str(Path(GkmasObjectManager.__file__).resolve())
         result["cryptography"] = cryptography.__version__
         result["protobuf"] = google.protobuf.__version__
+        result["mutagen"] = mutagen.version_string
     except Exception as exc:
         errors.append(f"Pythonモジュール: {exc}")
 
@@ -125,6 +127,7 @@ def run_scan(args: argparse.Namespace) -> int:
                     "key": group.key,
                     "singing": group.singing,
                     "formats": sorted(group.assets),
+                    "artwork": group.artwork.name if group.artwork else None,
                 }
                 for group in hrnm_018
             ],
@@ -140,6 +143,7 @@ def run_scan(args: argparse.Namespace) -> int:
                 "version": group.version,
                 "short_version": group.is_short_version,
                 "formats": sorted(group.assets),
+                "artwork": group.artwork.name if group.artwork else None,
             }
             for group in groups[: max(args.limit, 0)]
         ],
@@ -154,7 +158,13 @@ def run_acceptance_test(args: argparse.Namespace) -> int:
         _emit_report({"ok": False, "errors": ["--output が必要です"]}, args.report)
         return 4
 
-    from core.audio import read_wav_info_tags
+    from mutagen.id3 import ID3
+
+    from core.audio import (
+        read_mp3_embedded_artwork,
+        read_wav_embedded_artwork,
+        read_wav_info_tags,
+    )
     from core.config import ConfigStore
     from core.extractor import ExtractionEngine
     from core.manifest import load_preferred_manifest
@@ -193,21 +203,35 @@ def run_acceptance_test(args: argparse.Namespace) -> int:
             output_dir=output,
             save_wav=True,
             save_awb=True,
-            save_mp3=False,
+            save_mp3=True,
             save_acb=False,
             include_live=True,
         ),
     )
     general_awb = output / f"{general.title}＿姫崎莉波.awb"
     general_wav = output / f"{general.title}＿姫崎莉波.wav"
+    general_mp3 = output / f"{general.title}＿姫崎莉波.mp3"
     live_wav = output / f"{live.title}＿姫崎莉波［ライブ］.wav"
+    general_artwork = output / f"{general.title}＿姫崎莉波.png"
+    live_artwork = output / f"{live.title}＿姫崎莉波［ライブ］.png"
     general_wav_data = general_wav.read_bytes() if general_wav.exists() else b""
+    general_mp3_data = general_mp3.read_bytes() if general_mp3.exists() else b""
     live_wav_data = live_wav.read_bytes() if live_wav.exists() else b""
     general_tags = read_wav_info_tags(general_wav_data) if general_wav_data else {}
     live_tags = read_wav_info_tags(live_wav_data) if live_wav_data else {}
+    general_embedded_artwork = (
+        read_wav_embedded_artwork(general_wav_data) if general_wav_data else None
+    )
+    live_embedded_artwork = (
+        read_wav_embedded_artwork(live_wav_data) if live_wav_data else None
+    )
+    general_artwork_data = general_artwork.read_bytes() if general_artwork.exists() else b""
+    live_artwork_data = live_artwork.read_bytes() if live_artwork.exists() else b""
+    general_mp3_tags = ID3(general_mp3) if general_mp3.exists() else None
     checks = {
         "general_awb": general_awb.exists() and general_awb.read_bytes()[:4] == b"AFS2",
         "general_wav": general_wav.exists() and general_wav.read_bytes()[:4] in {b"RIFF", b"RF64"},
+        "general_mp3": general_mp3_data.startswith(b"ID3"),
         "live_true_wav": live_wav.exists() and live_wav.read_bytes()[:4] in {b"RIFF", b"RF64"},
         "general_wav_title": general_tags.get("INAM") == general.title,
         "general_wav_artist": general_tags.get("IART") == "姫崎莉波",
@@ -217,7 +241,15 @@ def run_acceptance_test(args: argparse.Namespace) -> int:
         ),
         "live_wav_title": live_tags.get("INAM") == live.title,
         "live_wav_artist": live_tags.get("IART") == "姫崎莉波",
+        "general_artwork_png": general_artwork_data.startswith(b"\x89PNG\r\n\x1a\n"),
+        "live_artwork_png": live_artwork_data.startswith(b"\x89PNG\r\n\x1a\n"),
+        "general_wav_embedded_artwork": general_embedded_artwork == general_artwork_data,
+        "general_mp3_embedded_artwork": (
+            read_mp3_embedded_artwork(general_mp3_data) == general_artwork_data
+        ),
+        "live_wav_embedded_artwork": live_embedded_artwork == live_artwork_data,
         "no_album_tag": "IPRD" not in general_tags and "IPRD" not in live_tags,
+        "no_mp3_album_tag": general_mp3_tags is not None and not general_mp3_tags.getall("TALB"),
     }
     payload = {
         "ok": all(checks.values()),

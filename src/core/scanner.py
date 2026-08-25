@@ -59,9 +59,35 @@ def _song_title(mapping: dict[str, str], group: SongGroup) -> str:
     return ""
 
 
+def _artwork_names(group: SongGroup) -> tuple[str, ...]:
+    """Return jacket resource names in game-preference order."""
+
+    if group.data_type == KIND_BGM:
+        return ("img_general_music_jacket_bgm-01.png",)
+    if "-" not in group.internal_id:
+        return ()
+    _scope, number = group.internal_id.split("-", 1)
+    if group.data_type == KIND_CHARACTER:
+        return (f"img_general_music_jacket_char-{group.character_id}-{number}.png",)
+    if group.data_type == KIND_UNIT:
+        return (f"img_general_music_jacket_unit-{group.character_id}-{number}.png",)
+    if group.singing == SINGING_INST:
+        return (f"img_general_music_jacket_all-{number}-inst.png",)
+    return (
+        f"img_general_music_jacket_all-{group.character_id}-{number}.png",
+        f"img_general_music_jacket_all-cmmn-{number}.png",
+        f"img_general_music_jacket_all-cmmn-{number}-before.png",
+        f"img_general_music_jacket_all-{number}-inst.png",
+    )
+
+
 def scan_music_assets(manifest: Any, song_names: dict[str, str] | None = None) -> list[SongGroup]:
     mapping = song_names or {}
     grouped: dict[str, SongGroup] = {}
+    artworks = {
+        str(obj.name).casefold(): _asset_ref(obj)
+        for obj in manifest.search(r"^img_general_music_jacket_.*\.png$")
+    }
 
     for obj in manifest.search(r"^sud_(?:music|bgm)_"):
         name = str(obj.name)
@@ -147,6 +173,10 @@ def scan_music_assets(manifest: Any, song_names: dict[str, str] | None = None) -
 
     for group in grouped.values():
         group.title = _song_title(mapping, group)
+        group.artwork = next(
+            (artworks[name.casefold()] for name in _artwork_names(group) if name.casefold() in artworks),
+            None,
+        )
         if group.data_type in (KIND_GENERAL, KIND_CHARACTER, KIND_UNIT) and group.singing != SINGING_INST:
             group.related_live_keys = sorted(
                 live_lookup.get((group.internal_id, group.character_id), [])

@@ -42,6 +42,7 @@ def test_extraction_dialog_uses_new_filename_default() -> None:
     dialog = ExtractionDialog(1, AppSettings())
     assert dialog.filename_format.currentData() == FILENAME_TITLE_CHARACTER
     assert dialog.filename_format.count() == 3
+    assert dialog.artwork.isChecked()
     assert all("曲名マッピングが" not in item.text() for item in dialog.findChildren(QCheckBox))
     dialog.close()
     app.processEvents()

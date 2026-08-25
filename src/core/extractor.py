@@ -10,7 +10,12 @@ from pathlib import Path
 
 import requests
 
-from .audio import decode_game_audio_to_wav, write_wav_info_tags
+from .audio import (
+    decode_game_audio_to_wav,
+    detect_image_mime,
+    write_mp3_tags,
+    write_wav_info_tags,
+)
 from .models import (
     FILENAME_ORIGINAL,
     FILENAME_TITLE,
@@ -113,6 +118,7 @@ class ExtractionEngine:
         options.output_dir.mkdir(parents=True, exist_ok=True)
 
         written: list[Path] = []
+        artwork_cache: dict[tuple[int, str], bytes] = {}
         total = max(len(groups), 1)
         for index, group in enumerate(groups):
             self._check_cancel()
@@ -120,13 +126,26 @@ class ExtractionEngine:
             self.progress(int(index / total * 100), f"{display} を処理中...")
             self.log(f"{display} の抽出を開始")
             raw_cache: dict[str, bytes] = {}
+            artwork: bytes | None = None
+
+            if options.save_artwork:
+                if group.artwork:
+                    artwork_key = (group.artwork.object_id, group.artwork.md5)
+                    artwork = artwork_cache.get(artwork_key)
+                    if artwork is None:
+                        artwork = self._obtain(group.artwork, index, total)
+                        detect_image_mime(artwork)
+                        artwork_cache[artwork_key] = artwork
+                    written.extend(self._save_artwork(group, artwork, options))
+                else:
+                    self.log(f"{display}: 対応するアルバムアートがありません")
 
             if options.save_awb and "AWB" in group.assets:
-                written.extend(self._save_raw(group, "AWB", options, raw_cache, index, total))
+                written.extend(self._save_raw(group, "AWB", options, raw_cache, index, total, artwork))
             if options.save_mp3 and "MP3" in group.assets:
-                written.extend(self._save_raw(group, "MP3", options, raw_cache, index, total))
+                written.extend(self._save_raw(group, "MP3", options, raw_cache, index, total, artwork))
             if options.save_acb and "ACB" in group.assets:
-                written.extend(self._save_raw(group, "ACB", options, raw_cache, index, total))
+                written.extend(self._save_raw(group, "ACB", options, raw_cache, index, total, artwork))
             if options.save_wav:
                 source_key = next(
                     (key for key in ("AWB", "LIVE", "ACB") if key in group.assets),
@@ -143,7 +162,16 @@ class ExtractionEngine:
                         f"{display}: WAVへデコード中...",
                     )
                     converted = decode_game_audio_to_wav(asset, raw)
-                    written.extend(self._save_converted(group, asset, converted.data, converted.mimetype, options))
+                    written.extend(
+                        self._save_converted(
+                            group,
+                            asset,
+                            converted.data,
+                            converted.mimetype,
+                            options,
+                            artwork,
+                        )
+                    )
                     self.log(f"{display} WAV変換成功")
                 elif group.data_type == KIND_LIVE:
                     self.log(f"{display}: WAV変換可能なライブ音源がありません")
@@ -175,6 +203,7 @@ class ExtractionEngine:
         raw_cache: dict[str, bytes],
         index: int,
         total: int,
+        artwork: bytes | None,
     ) -> list[Path]:
         asset = group.assets[format_key]
         raw = raw_cache.get(format_key)
@@ -183,7 +212,15 @@ class ExtractionEngine:
             raw_cache[format_key] = raw
         filename = self._output_filename(group, asset, asset.extension, options.filename_format)
         target = options.output_dir / filename
-        if self._write_new(target, raw):
+        output = raw
+        if format_key == "MP3" and artwork is not None:
+            output = write_mp3_tags(
+                raw,
+                title=group.title or group.internal_id,
+                artist=self._character_name(group),
+                artwork=artwork,
+            )
+        if self._write_new(target, output):
             self.log(f"{asset.name} を保存")
             return [target]
         self.log(f"既存ファイルをスキップ: {target.name}")
@@ -196,13 +233,14 @@ class ExtractionEngine:
         data: bytes,
         mimetype: str,
         options: ExtractionOptions,
+        artwork: bytes | None,
     ) -> list[Path]:
         title = group.title or group.internal_id
         artist = self._character_name(group)
         if mimetype != "application/zip":
             filename = self._output_filename(group, source, "wav", options.filename_format)
             target = options.output_dir / filename
-            tagged = write_wav_info_tags(data, title=title, artist=artist)
+            tagged = write_wav_info_tags(data, title=title, artist=artist, artwork=artwork)
             return [target] if self._write_new(target, tagged) else []
 
         written: list[Path] = []
@@ -213,10 +251,34 @@ class ExtractionEngine:
                 suffix = Path(member.filename).suffix or ".wav"
                 stem = Path(self._output_filename(group, source, "wav", options.filename_format)).stem
                 target = options.output_dir / f"{stem}_{counter:02d}{suffix}"
-                tagged = write_wav_info_tags(archive.read(member), title=title, artist=artist)
+                tagged = write_wav_info_tags(
+                    archive.read(member),
+                    title=title,
+                    artist=artist,
+                    artwork=artwork,
+                )
                 if self._write_new(target, tagged):
                     written.append(target)
         return written
+
+    def _save_artwork(
+        self,
+        group: SongGroup,
+        artwork: bytes,
+        options: ExtractionOptions,
+    ) -> list[Path]:
+        asset = group.artwork
+        if asset is None:
+            return []
+        mime = detect_image_mime(artwork)
+        extension = {"image/png": "png", "image/jpeg": "jpg", "image/webp": "webp"}[mime]
+        filename = self._output_filename(group, asset, extension, options.filename_format)
+        target = options.output_dir / filename
+        if self._write_new(target, artwork):
+            self.log(f"アルバムアートを保存: {target.name}")
+            return [target]
+        self.log(f"既存アルバムアートをスキップ: {target.name}")
+        return []
 
     def _obtain(self, asset: AssetRef, index: int, total: int) -> bytes:
         self._check_cancel()

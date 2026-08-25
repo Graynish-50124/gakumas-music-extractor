@@ -71,6 +71,7 @@ class SongGroup:
     base_name: str
     title: str = ""
     assets: dict[str, AssetRef] = field(default_factory=dict)
+    artwork: AssetRef | None = None
     related_live_keys: list[str] = field(default_factory=list)
 
     @property
@@ -83,8 +84,13 @@ class SongGroup:
         return self.data_type == KIND_LIVE and self.version.casefold().startswith("normal-")
 
     @property
+    def has_artwork(self) -> bool:
+        return self.artwork is not None
+
+    @property
     def search_text(self) -> str:
         names = " ".join(asset.name for asset in self.assets.values())
+        artwork_name = self.artwork.name if self.artwork else ""
         return " ".join(
             (
                 self.internal_id,
@@ -94,6 +100,7 @@ class SongGroup:
                 self.version,
                 self.base_name,
                 self.title,
+                artwork_name,
                 "短縮版" if self.is_short_version else "通常版",
                 names,
             )
@@ -114,6 +121,7 @@ class ExtractionOptions:
     save_awb: bool = True
     save_mp3: bool = False
     save_acb: bool = False
+    save_artwork: bool = True
     include_live: bool = False
     filename_format: str = FILENAME_TITLE_CHARACTER
 
