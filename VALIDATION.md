@@ -5,7 +5,7 @@
 
 ## 共通テスト
 
-- pytest: 22件合格
+- pytest: 23件合格
 - 学マス既定フォルダの自動検出: 合格
 - 暗号化ローカル`octocacheevai`の復号・MD5検証・Protobuf解析: 合格
 - Manifest Revision 45 / 46,121オブジェクトを解析: 合格

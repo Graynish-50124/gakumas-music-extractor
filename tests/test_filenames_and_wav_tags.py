@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import base64
 import io
 import wave
 
+import pytest
 from mutagen.flac import FLAC
 from mutagen.id3 import ID3
 from mutagen.wave import WAVE
@@ -14,6 +16,8 @@ from core.audio import (
     read_mp3_embedded_artwork,
     read_wav_embedded_artwork,
     read_wav_info_tags,
+    verify_audio_components,
+    write_flac_tags,
     write_mp3_tags,
     write_wav_info_tags,
 )
@@ -50,6 +54,11 @@ def _wav_with_album() -> bytes:
 
 
 PNG_ARTWORK = b"\x89PNG\r\n\x1a\n" + b"test-cover-art"
+MINIMAL_FLAC = base64.b64decode(
+    "ZkxhQwAAACIAEAAQAAAMAAAMAfQA8AAAABBwvI9LcqhpIUaL+OhEHc5RhAAALAwAAABM"
+    "YXZmNjMuMS4xMDEBAAAAFAAAAGVuY29kZXI9TGF2ZjYzLjEuMTAx//hkCAAPzgAAAA6F"
+)
+HAS_FFMPEG = verify_audio_components()["ffmpeg"] is not None
 
 
 def _asset(name: str = "sud_music_general_amao-001-amao_game.awb") -> AssetRef:
@@ -121,6 +130,20 @@ def test_mp3_title_artist_and_cover_art_tags() -> None:
     assert read_mp3_embedded_artwork(tagged) == PNG_ARTWORK
 
 
+def test_flac_metadata_writer_does_not_require_ffmpeg() -> None:
+    flac = write_flac_tags(
+        MINIMAL_FLAC,
+        title="Fluorite",
+        artist="有村麻央",
+        artwork=PNG_ARTWORK,
+    )
+    assert read_flac_tags(flac)["title"] == "Fluorite"
+    assert read_flac_tags(flac)["artist"] == "有村麻央"
+    assert "album" not in read_flac_tags(flac)
+    assert read_flac_embedded_artwork(flac) == PNG_ARTWORK
+
+
+@pytest.mark.skipif(not HAS_FFMPEG, reason="同梱FFmpegなし")
 def test_wav_to_flac_preserves_pcm_and_writes_metadata() -> None:
     source = _wav_with_album()
     flac = convert_wav_to_flac(
@@ -140,6 +163,7 @@ def test_wav_to_flac_preserves_pcm_and_writes_metadata() -> None:
     assert read_flac_embedded_artwork(flac) == PNG_ARTWORK
 
 
+@pytest.mark.skipif(not HAS_FFMPEG, reason="同梱FFmpegなし")
 def test_flac_only_does_not_leave_wav_file(tmp_path) -> None:
     engine = ExtractionEngine(None, {"amao": "有村麻央"})
     group = _group()
