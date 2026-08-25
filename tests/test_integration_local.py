@@ -4,9 +4,12 @@ import wave
 from pathlib import Path
 
 import pytest
+from mutagen.flac import FLAC
 
 from core.config import ConfigStore
 from core.audio import (
+    read_flac_embedded_artwork,
+    read_flac_tags,
     read_mp3_embedded_artwork,
     read_wav_embedded_artwork,
     read_wav_info_tags,
@@ -72,22 +75,34 @@ def test_real_awb_and_wav_extraction(tmp_path: Path) -> None:
         ExtractionOptions(
             output_dir=tmp_path,
             save_wav=True,
+            save_flac=True,
             save_awb=True,
             save_mp3=True,
         ),
     )
     awb = tmp_path / f"{group.title}＿姫崎莉波.awb"
     wav = tmp_path / f"{group.title}＿姫崎莉波.wav"
+    flac = tmp_path / f"{group.title}＿姫崎莉波.flac"
     mp3 = tmp_path / f"{group.title}＿姫崎莉波.mp3"
     artwork = tmp_path / f"{group.title}＿姫崎莉波.png"
     assert awb in written and awb.read_bytes()[:4] == b"AFS2"
     assert wav in written and wav.read_bytes()[:4] in {b"RIFF", b"RF64"}
+    assert flac in written and flac.read_bytes()[:4] == b"fLaC"
     assert read_wav_info_tags(wav.read_bytes()) == {
         "INAM": group.title,
         "IART": "姫崎莉波",
     }
     assert artwork in written and artwork.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
     assert read_wav_embedded_artwork(wav.read_bytes()) == artwork.read_bytes()
+    assert read_flac_tags(flac.read_bytes())["title"] == group.title
+    assert read_flac_tags(flac.read_bytes())["artist"] == "姫崎莉波"
+    assert "album" not in read_flac_tags(flac.read_bytes())
+    assert read_flac_embedded_artwork(flac.read_bytes()) == artwork.read_bytes()
+    parsed_flac = FLAC(flac)
+    with wave.open(str(wav), "rb") as stream:
+        assert parsed_flac.info.sample_rate == stream.getframerate()
+        assert parsed_flac.info.channels == stream.getnchannels()
+        assert parsed_flac.info.total_samples == stream.getnframes()
     assert mp3 in written and mp3.read_bytes().startswith(b"ID3")
     assert read_mp3_embedded_artwork(mp3.read_bytes()) == artwork.read_bytes()
 
@@ -108,11 +123,18 @@ def test_real_live_true_wav_extraction(tmp_path: Path) -> None:
     written = engine.extract(
         [live],
         groups,
-        ExtractionOptions(output_dir=tmp_path, save_wav=True, save_awb=False),
+        ExtractionOptions(
+            output_dir=tmp_path,
+            save_wav=True,
+            save_flac=True,
+            save_awb=False,
+        ),
     )
     wav = tmp_path / f"{live.title}＿姫崎莉波［ライブ］.wav"
+    flac = tmp_path / f"{live.title}＿姫崎莉波［ライブ］.flac"
     artwork = tmp_path / f"{live.title}＿姫崎莉波［ライブ］.png"
     assert wav in written and wav.read_bytes()[:4] in {b"RIFF", b"RF64"}
+    assert flac in written and flac.read_bytes()[:4] == b"fLaC"
     with wave.open(str(wav), "rb") as stream:
         assert stream.getnchannels() == 2
         assert stream.getframerate() == 48_000
@@ -123,6 +145,10 @@ def test_real_live_true_wav_extraction(tmp_path: Path) -> None:
     }
     assert artwork in written and artwork.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
     assert read_wav_embedded_artwork(wav.read_bytes()) == artwork.read_bytes()
+    assert read_flac_embedded_artwork(flac.read_bytes()) == artwork.read_bytes()
+    parsed_flac = FLAC(flac)
+    assert parsed_flac.info.channels == 2
+    assert parsed_flac.info.sample_rate == 48_000
     from UnityPy.export import AudioClipConverter
 
     assert AudioClipConverter.pyfmodex is None

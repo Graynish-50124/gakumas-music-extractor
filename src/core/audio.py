@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import UnityPy
+from mutagen.flac import FLAC, Picture
 from mutagen.id3 import APIC, ID3, ID3NoHeaderError, TIT2, TPE1
 from mutagen.wave import WAVE
 
@@ -168,6 +169,60 @@ def read_mp3_embedded_artwork(data: bytes) -> bytes | None:
         raise AudioConversionError(f"MP3のアルバムアートを読み込めません: {exc}") from exc
 
 
+def write_flac_tags(
+    data: bytes,
+    *,
+    title: str,
+    artist: str,
+    artwork: bytes | None,
+) -> bytes:
+    if not data.startswith(b"fLaC"):
+        raise AudioConversionError("FLACヘッダーを確認できません")
+    stream = io.BytesIO(data)
+    try:
+        audio = FLAC(stream)
+        if audio.tags is None:
+            audio.add_tags()
+        audio["title"] = [title] if title else []
+        audio["artist"] = [artist] if artist else []
+        if artwork is not None:
+            audio.clear_pictures()
+            picture = Picture()
+            picture.type = 3
+            picture.mime = detect_image_mime(artwork)
+            picture.desc = "Cover"
+            picture.data = artwork
+            audio.add_picture(picture)
+        stream.seek(0)
+        audio.save(stream)
+        return stream.getvalue()
+    except Exception as exc:
+        raise AudioConversionError(f"FLACへのタグ・アルバムアート埋め込みに失敗しました: {exc}") from exc
+
+
+def read_flac_tags(data: bytes) -> dict[str, str]:
+    try:
+        audio = FLAC(io.BytesIO(data))
+        return {
+            str(key).casefold(): str(values[0])
+            for key, values in (audio.tags or {}).items()
+            if values
+        }
+    except Exception as exc:
+        raise AudioConversionError(f"FLACのタグを読み込めません: {exc}") from exc
+
+
+def read_flac_embedded_artwork(data: bytes) -> bytes | None:
+    try:
+        pictures = FLAC(io.BytesIO(data)).pictures
+        if not pictures:
+            return None
+        preferred = next((picture for picture in pictures if int(picture.type) == 3), pictures[0])
+        return bytes(preferred.data)
+    except Exception as exc:
+        raise AudioConversionError(f"FLACのアルバムアートを読み込めません: {exc}") from exc
+
+
 def write_wav_info_tags(
     data: bytes,
     *,
@@ -246,7 +301,7 @@ def verify_audio_components() -> dict[str, Path | None]:
     return component_paths()
 
 
-def _run_audio_tool(command: list[str], tool_name: str) -> None:
+def _run_audio_tool(command: list[str], tool_name: str, action: str = "音声デコード") -> None:
     completed = subprocess.run(
         command,
         stdout=subprocess.PIPE,
@@ -260,7 +315,56 @@ def _run_audio_tool(command: list[str], tool_name: str) -> None:
     if len(detail) > 800:
         detail = detail[-800:]
     suffix = f": {detail}" if detail else ""
-    raise AudioConversionError(f"{tool_name}による音声デコードに失敗しました{suffix}")
+    raise AudioConversionError(f"{tool_name}による{action}に失敗しました{suffix}")
+
+
+def convert_wav_to_flac(
+    data: bytes,
+    *,
+    title: str,
+    artist: str,
+    artwork: bytes | None,
+) -> bytes:
+    """Losslessly encode decoded PCM WAV data as tagged FLAC."""
+
+    if len(data) < 12 or data[:4] not in {b"RIFF", b"RF64"} or data[8:12] != b"WAVE":
+        raise AudioConversionError("FLAC変換元のWAVヘッダーを確認できません")
+    ffmpeg = component_paths()["ffmpeg"]
+    if not ffmpeg:
+        raise ComponentMissingError("FLAC変換に必要なFFmpegが見つかりません")
+
+    with tempfile.TemporaryDirectory(prefix="gakumas-flac-") as temp_dir:
+        work = Path(temp_dir)
+        source = work / "source.wav"
+        output = work / "output.flac"
+        source.write_bytes(data)
+        _run_audio_tool(
+            [
+                str(ffmpeg),
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-y",
+                "-i",
+                str(source),
+                "-map",
+                "0:a:0",
+                "-map_metadata",
+                "-1",
+                "-c:a",
+                "flac",
+                "-compression_level",
+                "5",
+                str(output),
+            ],
+            "FFmpeg",
+            "FLAC変換",
+        )
+        flac = output.read_bytes() if output.exists() else b""
+
+    if not flac.startswith(b"fLaC"):
+        raise AudioConversionError("FFmpegのFLAC出力形式を確認できません")
+    return write_flac_tags(flac, title=title, artist=artist, artwork=artwork)
 
 
 def _decode_with_vgmstream(raw: bytes) -> list[bytes]:

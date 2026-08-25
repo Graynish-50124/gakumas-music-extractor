@@ -36,6 +36,7 @@ class AppSettings:
     manifest_path: str = ""
     output_dir: str = ""
     default_wav: bool = True
+    default_flac: bool = False
     default_awb: bool = True
     default_mp3: bool = False
     default_acb: bool = False

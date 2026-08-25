@@ -3,10 +3,14 @@ from __future__ import annotations
 import io
 import wave
 
+from mutagen.flac import FLAC
 from mutagen.id3 import ID3
 from mutagen.wave import WAVE
 
 from core.audio import (
+    convert_wav_to_flac,
+    read_flac_embedded_artwork,
+    read_flac_tags,
     read_mp3_embedded_artwork,
     read_wav_embedded_artwork,
     read_wav_info_tags,
@@ -23,6 +27,7 @@ from core.models import (
     SINGING_INST,
     SINGING_VOCAL,
     AssetRef,
+    ExtractionOptions,
     SongGroup,
 )
 
@@ -116,6 +121,47 @@ def test_mp3_title_artist_and_cover_art_tags() -> None:
     assert read_mp3_embedded_artwork(tagged) == PNG_ARTWORK
 
 
+def test_wav_to_flac_preserves_pcm_and_writes_metadata() -> None:
+    source = _wav_with_album()
+    flac = convert_wav_to_flac(
+        source,
+        title="Fluorite",
+        artist="有村麻央",
+        artwork=PNG_ARTWORK,
+    )
+    parsed = FLAC(io.BytesIO(flac))
+    assert flac.startswith(b"fLaC")
+    assert parsed.info.sample_rate == 8_000
+    assert parsed.info.channels == 1
+    assert parsed.info.total_samples == 16
+    assert read_flac_tags(flac)["title"] == "Fluorite"
+    assert read_flac_tags(flac)["artist"] == "有村麻央"
+    assert "album" not in read_flac_tags(flac)
+    assert read_flac_embedded_artwork(flac) == PNG_ARTWORK
+
+
+def test_flac_only_does_not_leave_wav_file(tmp_path) -> None:
+    engine = ExtractionEngine(None, {"amao": "有村麻央"})
+    group = _group()
+    written = engine._save_converted(
+        group,
+        _asset(),
+        _wav_with_album(),
+        "audio/wav",
+        ExtractionOptions(
+            output_dir=tmp_path,
+            save_wav=False,
+            save_flac=True,
+            save_awb=False,
+        ),
+        PNG_ARTWORK,
+    )
+    flac = tmp_path / "Fluorite＿有村麻央.flac"
+    assert written == [flac]
+    assert flac.read_bytes().startswith(b"fLaC")
+    assert not (tmp_path / "Fluorite＿有村麻央.wav").exists()
+
+
 def test_three_filename_formats_and_live_marker() -> None:
     engine = ExtractionEngine(None, {"amao": "有村麻央"})
     group = _group()
@@ -125,6 +171,7 @@ def test_three_filename_formats_and_live_marker() -> None:
         "sud_music_general_amao-001-amao_game.awb"
     )
     assert engine._output_filename(group, asset, "mp3", FILENAME_TITLE) == "Fluorite.mp3"
+    assert engine._output_filename(group, asset, "flac", FILENAME_TITLE) == "Fluorite.flac"
 
     live = _group(key="live", data_type=KIND_LIVE, version="true-001")
     live_asset = _asset("sud_music_live_amao-001-amao_true-001.unity3d")

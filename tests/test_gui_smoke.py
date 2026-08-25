@@ -17,6 +17,7 @@ from core.config import AppSettings, ConfigStore
 from core.models import FILENAME_TITLE_CHARACTER, KIND_GENERAL, SINGING_VOCAL, SongGroup
 from gui.extraction_dialog import ExtractionDialog
 from gui.main_window import MainWindow
+from gui.settings_dialog import SettingsDialog
 
 
 def test_main_window_constructs(tmp_path) -> None:
@@ -42,8 +43,21 @@ def test_extraction_dialog_uses_new_filename_default() -> None:
     dialog = ExtractionDialog(1, AppSettings())
     assert dialog.filename_format.currentData() == FILENAME_TITLE_CHARACTER
     assert dialog.filename_format.count() == 3
+    assert dialog.flac.text() == "FLAC（WAVから変換）"
+    assert not dialog.flac.isChecked()
     assert dialog.artwork.isChecked()
     assert all("曲名マッピングが" not in item.text() for item in dialog.findChildren(QCheckBox))
+    dialog.close()
+    app.processEvents()
+
+
+def test_settings_dialog_persists_flac_default(tmp_path) -> None:
+    app = QApplication.instance() or QApplication([])
+    store = ConfigStore(tmp_path / "config")
+    dialog = SettingsDialog(AppSettings(default_flac=True), store)
+    assert dialog.flac.text() == "FLAC（WAVから変換）"
+    assert dialog.flac.isChecked()
+    assert dialog.result_settings().default_flac
     dialog.close()
     app.processEvents()
 

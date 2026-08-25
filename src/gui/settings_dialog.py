@@ -81,11 +81,13 @@ class SettingsDialog(QDialog):
         defaults_tab = QWidget()
         defaults_form = QFormLayout(defaults_tab)
         self.wav = QCheckBox("WAV（ゲーム音源をPCMへデコード）")
+        self.flac = QCheckBox("FLAC（WAVから変換）")
         self.awb = QCheckBox("元AWB")
         self.mp3 = QCheckBox("Manifest収録MP3")
         self.acb = QCheckBox("元ACB")
-        self.artwork = QCheckBox("アルバムアートをPNG保存し、WAV／MP3に埋め込む")
+        self.artwork = QCheckBox("アルバムアートをPNG保存し、WAV／FLAC／MP3に埋め込む")
         self.wav.setChecked(settings.default_wav)
+        self.flac.setChecked(settings.default_flac)
         self.awb.setChecked(settings.default_awb)
         self.mp3.setChecked(settings.default_mp3)
         self.acb.setChecked(settings.default_acb)
@@ -103,7 +105,15 @@ class SettingsDialog(QDialog):
         self.theme.addItem("ダーク", "dark")
         self.theme.addItem("ライト", "light")
         self.theme.setCurrentIndex(max(0, self.theme.findData(settings.theme)))
-        for widget in (self.wav, self.awb, self.mp3, self.acb, self.artwork, self.auto_scan):
+        for widget in (
+            self.wav,
+            self.flac,
+            self.awb,
+            self.mp3,
+            self.acb,
+            self.artwork,
+            self.auto_scan,
+        ):
             defaults_form.addRow("", widget)
         defaults_form.addRow("既定のファイル名", self.filename_format)
         defaults_form.addRow("表示テーマ", self.theme)
@@ -143,6 +153,7 @@ class SettingsDialog(QDialog):
             manifest_path=self.manifest.text(),
             output_dir=self.output.text(),
             default_wav=self.wav.isChecked(),
+            default_flac=self.flac.isChecked(),
             default_awb=self.awb.isChecked(),
             default_mp3=self.mp3.isChecked(),
             default_acb=self.acb.isChecked(),

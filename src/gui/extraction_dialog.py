@@ -40,20 +40,22 @@ class ExtractionDialog(QDialog):
         formats = QGroupBox("保存形式")
         formats_layout = QVBoxLayout(formats)
         self.wav = QCheckBox("WAV（ゲーム音源をPCMへデコード）")
+        self.flac = QCheckBox("FLAC（WAVから変換）")
         self.awb = QCheckBox("元AWB")
         self.mp3 = QCheckBox("Manifest収録MP3")
         self.acb = QCheckBox("元ACB")
         self.wav.setChecked(settings.default_wav)
+        self.flac.setChecked(settings.default_flac)
         self.awb.setChecked(settings.default_awb)
         self.mp3.setChecked(settings.default_mp3)
         self.acb.setChecked(settings.default_acb)
-        for item in (self.wav, self.awb, self.mp3, self.acb):
+        for item in (self.wav, self.flac, self.awb, self.mp3, self.acb):
             formats_layout.addWidget(item)
 
         extras = QGroupBox("追加オプション")
         extras_layout = QVBoxLayout(extras)
         self.live = QCheckBox("関連するライブ音源も取得（normal / trueを区別）")
-        self.artwork = QCheckBox("アルバムアートをPNG保存し、WAV／MP3に埋め込む")
+        self.artwork = QCheckBox("アルバムアートをPNG保存し、WAV／FLAC／MP3に埋め込む")
         self.artwork.setChecked(settings.default_artwork)
         self.artwork.setToolTip("対応画像がない曲は音源のみ保存します")
         extras_layout.addWidget(self.live)
@@ -79,6 +81,7 @@ class ExtractionDialog(QDialog):
 
         note = QLabel(
             "WAVはゲーム内のHCA等の圧縮音源をPCMへデコードしたものです。\n"
+            "FLACはそのWAV相当のPCMデータから可逆圧縮で変換します。\n"
             "CD等のロスレスマスターを復元するものではありません。\n"
             "曲名が未登録の場合は内部名を使用します。同名衝突時だけ識別子を補います。"
         )
@@ -107,7 +110,9 @@ class ExtractionDialog(QDialog):
             self.output.setText(value)
 
     def _validate(self) -> None:
-        if not any(item.isChecked() for item in (self.wav, self.awb, self.mp3, self.acb)):
+        if not any(
+            item.isChecked() for item in (self.wav, self.flac, self.awb, self.mp3, self.acb)
+        ):
             QMessageBox.warning(self, "保存形式", "保存形式を1つ以上選択してください。")
             return
         if not self.output.text().strip():
@@ -119,6 +124,7 @@ class ExtractionDialog(QDialog):
         return ExtractionOptions(
             output_dir=Path(self.output.text().strip()).expanduser(),
             save_wav=self.wav.isChecked(),
+            save_flac=self.flac.isChecked(),
             save_awb=self.awb.isChecked(),
             save_mp3=self.mp3.isChecked(),
             save_acb=self.acb.isChecked(),

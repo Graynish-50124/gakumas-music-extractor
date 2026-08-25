@@ -11,6 +11,7 @@ from pathlib import Path
 import requests
 
 from .audio import (
+    convert_wav_to_flac,
     decode_game_audio_to_wav,
     detect_image_mime,
     write_mp3_tags,
@@ -146,7 +147,7 @@ class ExtractionEngine:
                 written.extend(self._save_raw(group, "MP3", options, raw_cache, index, total, artwork))
             if options.save_acb and "ACB" in group.assets:
                 written.extend(self._save_raw(group, "ACB", options, raw_cache, index, total, artwork))
-            if options.save_wav:
+            if options.save_wav or options.save_flac:
                 source_key = next(
                     (key for key in ("AWB", "LIVE", "ACB") if key in group.assets),
                     None,
@@ -159,7 +160,7 @@ class ExtractionEngine:
                         raw_cache[source_key] = raw
                     self.progress(
                         int((index + 0.75) / total * 100),
-                        f"{display}: WAVへデコード中...",
+                        f"{display}: 音源をWAVへデコード中...",
                     )
                     converted = decode_game_audio_to_wav(asset, raw)
                     written.extend(
@@ -172,9 +173,12 @@ class ExtractionEngine:
                             artwork,
                         )
                     )
-                    self.log(f"{display} WAV変換成功")
+                    formats = "WAV／FLAC" if options.save_wav and options.save_flac else (
+                        "WAV" if options.save_wav else "FLAC"
+                    )
+                    self.log(f"{display} {formats}変換成功")
                 elif group.data_type == KIND_LIVE:
-                    self.log(f"{display}: WAV変換可能なライブ音源がありません")
+                    self.log(f"{display}: WAV／FLAC変換可能なライブ音源がありません")
 
             self.progress(int((index + 1) / total * 100), f"{display} 完了")
 
@@ -237,28 +241,58 @@ class ExtractionEngine:
     ) -> list[Path]:
         title = group.title or group.internal_id
         artist = self._character_name(group)
+        samples: list[tuple[int | None, bytes]] = []
         if mimetype != "application/zip":
-            filename = self._output_filename(group, source, "wav", options.filename_format)
+            samples.append((None, data))
+        else:
+            with zipfile.ZipFile(io.BytesIO(data)) as archive:
+                samples.extend(
+                    (counter, archive.read(member))
+                    for counter, member in enumerate(archive.infolist(), start=1)
+                    if not member.is_dir()
+                )
+
+        def target_for(extension: str, counter: int | None) -> Path:
+            filename = self._output_filename(
+                group,
+                source,
+                extension,
+                options.filename_format,
+            )
             target = options.output_dir / filename
-            tagged = write_wav_info_tags(data, title=title, artist=artist, artwork=artwork)
-            return [target] if self._write_new(target, tagged) else []
+            if counter is None:
+                return target
+            return target.with_name(f"{target.stem}_{counter:02d}{target.suffix}")
 
         written: list[Path] = []
-        with zipfile.ZipFile(io.BytesIO(data)) as archive:
-            for counter, member in enumerate(archive.infolist(), start=1):
-                if member.is_dir():
-                    continue
-                suffix = Path(member.filename).suffix or ".wav"
-                stem = Path(self._output_filename(group, source, "wav", options.filename_format)).stem
-                target = options.output_dir / f"{stem}_{counter:02d}{suffix}"
+        for counter, wav_data in samples:
+            if options.save_wav:
+                target = target_for("wav", counter)
                 tagged = write_wav_info_tags(
-                    archive.read(member),
+                    wav_data,
                     title=title,
                     artist=artist,
                     artwork=artwork,
                 )
                 if self._write_new(target, tagged):
                     written.append(target)
+                    self.log(f"WAVを保存: {target.name}")
+                else:
+                    self.log(f"既存WAVをスキップ: {target.name}")
+            if options.save_flac:
+                target = target_for("flac", counter)
+                if target.exists():
+                    self.log(f"既存FLACをスキップ: {target.name}")
+                    continue
+                flac = convert_wav_to_flac(
+                    wav_data,
+                    title=title,
+                    artist=artist,
+                    artwork=artwork,
+                )
+                if self._write_new(target, flac):
+                    written.append(target)
+                    self.log(f"FLACを保存: {target.name}")
         return written
 
     def _save_artwork(

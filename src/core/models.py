@@ -118,6 +118,7 @@ class ScanResult:
 class ExtractionOptions:
     output_dir: Path
     save_wav: bool = True
+    save_flac: bool = False
     save_awb: bool = True
     save_mp3: bool = False
     save_acb: bool = False
