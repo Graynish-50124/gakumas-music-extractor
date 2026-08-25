@@ -18,14 +18,14 @@
 
 ### one-folder版（推奨）
 
-1. `GakumasMusicExtractor-one-folder.zip`を任意の場所へ展開します。
+1. `GakumasMusicExtractor-vX.Y.Z-one-folder.zip`を任意の場所へ展開します。`vX.Y.Z`はバージョン番号です。
 2. `GakumasMusicExtractor`フォルダ内の`GakumasMusicExtractor.exe`を起動します。
 
 `_internal`フォルダも実行に必要です。EXEだけを移動せず、フォルダごと利用してください。起動が速く、問題の切り分けもしやすいため、通常はこちらを推奨します。
 
 ### one-file版
 
-`GakumasMusicExtractor-one-file.zip`を展開し、中の`GakumasMusicExtractor.exe`を起動します。アプリ本体はこのEXEだけで動作します。初回を含む各起動時に内蔵ランタイムを一時フォルダへ展開するため、one-folder版より起動に時間がかかります。署名のない自作EXEなので、Windows SmartScreenやセキュリティ製品が確認を表示する場合があります。
+`GakumasMusicExtractor-vX.Y.Z-one-file.zip`を展開し、中の`GakumasMusicExtractor.exe`を起動します。`vX.Y.Z`はバージョン番号です。アプリ本体はこのEXEだけで動作します。初回を含む各起動時に内蔵ランタイムを一時フォルダへ展開するため、one-folder版より起動に時間がかかります。署名のない自作EXEなので、Windows SmartScreenやセキュリティ製品が確認を表示する場合があります。
 
 ## 基本的な使い方
 

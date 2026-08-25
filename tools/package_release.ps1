@@ -1,7 +1,29 @@
+param(
+    [string]$Version = ''
+)
+
 $ErrorActionPreference = 'Stop'
 $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $ReleaseRoot = Join-Path $ProjectRoot 'release'
 $StagingRoot = Join-Path $ReleaseRoot 'staging'
+
+if (-not $Version) {
+    $Changelog = Get-Content -Raw -LiteralPath (Join-Path $ProjectRoot 'CHANGELOG.md')
+    $VersionMatch = [regex]::Match($Changelog, '(?m)^##\s+(?<version>\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?)\s+-')
+    if (-not $VersionMatch.Success) {
+        throw 'CHANGELOG.mdから最新バージョンを取得できません。'
+    }
+    $Version = $VersionMatch.Groups['version'].Value
+}
+$NormalizedVersion = [regex]::Match(
+    $Version,
+    '^v?(?<number>\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?)$'
+)
+if (-not $NormalizedVersion.Success) {
+    throw "バージョン形式が不正です: $Version"
+}
+$Version = "v$($NormalizedVersion.Groups['number'].Value)"
+$ArchivePrefix = "GakumasMusicExtractor-$Version"
 
 function Remove-VerifiedReleasePath([string]$Path) {
     $ResolvedPath = [IO.Path]::GetFullPath($Path)
@@ -53,8 +75,8 @@ foreach ($Name in $Docs) {
 
 
 $Archives = @(
-    @{ Path = Join-Path $ReleaseRoot 'GakumasMusicExtractor-one-folder.zip'; Source = $OnedirStage },
-    @{ Path = Join-Path $ReleaseRoot 'GakumasMusicExtractor-one-file.zip'; Source = $OnefileStage }
+    @{ Path = Join-Path $ReleaseRoot "$ArchivePrefix-one-folder.zip"; Source = $OnedirStage },
+    @{ Path = Join-Path $ReleaseRoot "$ArchivePrefix-one-file.zip"; Source = $OnefileStage }
 )
 foreach ($Archive in $Archives) {
     if (Test-Path -LiteralPath $Archive.Path) {
@@ -66,6 +88,8 @@ $LegacyArtifacts = @(
     Join-Path $ReleaseRoot 'GakumasMusicExtractor.exe'
     Join-Path $ReleaseRoot 'GakumasMusicExtractor-source.zip'
     Join-Path $ReleaseRoot 'SHA256SUMS.txt'
+    Join-Path $ReleaseRoot 'GakumasMusicExtractor-one-folder.zip'
+    Join-Path $ReleaseRoot 'GakumasMusicExtractor-one-file.zip'
 )
 foreach ($Path in $LegacyArtifacts) {
     Remove-VerifiedReleasePath $Path
