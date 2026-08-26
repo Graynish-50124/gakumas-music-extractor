@@ -2,11 +2,18 @@ from __future__ import annotations
 
 import threading
 import traceback
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
 
 from PySide6.QtCore import QEvent, QModelIndex, QObject, QThread, QTimer, Qt, QUrl, Signal, Slot
-from PySide6.QtGui import QCloseEvent, QDesktopServices, QFont
+from PySide6.QtGui import (
+    QCloseEvent,
+    QDesktopServices,
+    QFont,
+    QStandardItem,
+    QStandardItemModel,
+)
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -42,6 +49,8 @@ from core.models import (
     KIND_GENERAL,
     KIND_LIVE,
     KIND_UNIT,
+    DEFAULT_FILTER_TYPES,
+    MUSIC_KINDS,
     SINGING_INST,
     SINGING_VOCAL,
     ExtractionOptions,
@@ -93,6 +102,85 @@ class FullCellCheckDelegate(QStyledItemDelegate):
             return False
         self.toggled.emit(index.row(), next_state == Qt.Checked, extend_range)
         return True
+
+
+class CheckableComboBox(QComboBox):
+    """A compact multi-select combo box with a checkbox for every item."""
+
+    selectionChanged = Signal()
+
+    def __init__(self, parent: QWidget | None = None):
+        super().__init__(parent)
+        self._check_model = QStandardItemModel(self)
+        self.setModel(self._check_model)
+        self.setEditable(True)
+        self.lineEdit().setReadOnly(True)
+        self.lineEdit().installEventFilter(self)
+        self.view().viewport().installEventFilter(self)
+
+    def add_check_item(self, label: str, value: str, checked: bool = False) -> None:
+        item = QStandardItem(label)
+        item.setData(value, Qt.UserRole)
+        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable)
+        item.setData(Qt.Checked if checked else Qt.Unchecked, Qt.CheckStateRole)
+        self._check_model.appendRow(item)
+        self._update_display_text()
+
+    def checked_data(self) -> list[str]:
+        return [
+            str(item.data(Qt.UserRole))
+            for row in range(self._check_model.rowCount())
+            if (item := self._check_model.item(row)) is not None
+            and item.data(Qt.CheckStateRole) == Qt.Checked
+        ]
+
+    def set_checked_data(self, values: Iterable[str]) -> None:
+        selected = {str(value) for value in values}
+        for row in range(self._check_model.rowCount()):
+            item = self._check_model.item(row)
+            if item is not None:
+                item.setData(
+                    Qt.Checked if str(item.data(Qt.UserRole)) in selected else Qt.Unchecked,
+                    Qt.CheckStateRole,
+                )
+        self._update_display_text()
+
+    def _toggle_index(self, index: QModelIndex) -> bool:
+        if not index.isValid():
+            return False
+        item = self._check_model.itemFromIndex(index)
+        if item is None:
+            return False
+        checked = item.data(Qt.CheckStateRole) == Qt.Checked
+        item.setData(Qt.Unchecked if checked else Qt.Checked, Qt.CheckStateRole)
+        self._update_display_text()
+        self.selectionChanged.emit()
+        return True
+
+    def _update_display_text(self) -> None:
+        values = self.checked_data()
+        if not values:
+            text = "未選択"
+        elif len(values) <= 2:
+            text = "＋".join(values)
+        else:
+            text = f"{len(values)}種類選択"
+        self.setCurrentIndex(-1)
+        self.lineEdit().setText(text)
+        self.setToolTip("選択中: " + ("、".join(values) if values else "なし"))
+
+    def eventFilter(self, watched: QObject, event) -> bool:
+        if watched is self.lineEdit() and event.type() == QEvent.MouseButtonRelease:
+            if event.button() == Qt.LeftButton and self.isEnabled():
+                self.showPopup()
+                return True
+        if watched is self.view().viewport():
+            if event.type() == QEvent.MouseButtonRelease and event.button() == Qt.LeftButton:
+                index = self.view().indexAt(event.position().toPoint())
+                return self._toggle_index(index)
+            if event.type() == QEvent.KeyPress and event.key() == Qt.Key_Space:
+                return self._toggle_index(self.view().currentIndex())
+        return super().eventFilter(watched, event)
 
 
 class ScanWorker(QObject):
@@ -275,11 +363,11 @@ class MainWindow(QMainWindow):
         self.character_filter.setMinimumWidth(220)
         self.character_filter.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.character_filter.setToolTip("キャラクター名またはIDで対象を絞り込みます")
-        self.type_filter = QComboBox()
-        self.type_filter.addItem("すべて", "")
-        self.type_filter.setMinimumWidth(145)
-        for kind in (KIND_GENERAL, KIND_CHARACTER, KIND_UNIT, KIND_LIVE, KIND_BGM):
-            self.type_filter.addItem(kind, kind)
+        self.type_filter = CheckableComboBox()
+        self.type_filter.setMinimumWidth(230)
+        selected_types = set(self.settings.filter_types)
+        for kind in MUSIC_KINDS:
+            self.type_filter.add_check_item(kind, kind, kind in selected_types)
         self.singing_filter = QComboBox()
         self.singing_filter.addItem("すべて", "")
         self.singing_filter.addItem(SINGING_VOCAL, SINGING_VOCAL)
@@ -313,8 +401,9 @@ class MainWindow(QMainWindow):
         filter_layout.addLayout(filters)
         root.addWidget(filter_card)
 
-        for widget in (self.character_filter, self.type_filter, self.singing_filter):
+        for widget in (self.character_filter, self.singing_filter):
             widget.currentIndexChanged.connect(self.refresh_table)
+        self.type_filter.selectionChanged.connect(self._type_filter_changed)
         self.short_filter.currentIndexChanged.connect(self._short_filter_changed)
         self.search.textChanged.connect(self.refresh_table)
 
@@ -523,10 +612,15 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def _reset_filters(self) -> None:
-        for combo in (self.character_filter, self.type_filter, self.singing_filter):
+        for combo in (self.character_filter, self.singing_filter):
             combo.blockSignals(True)
             combo.setCurrentIndex(0)
             combo.blockSignals(False)
+        self.type_filter.blockSignals(True)
+        self.type_filter.set_checked_data(DEFAULT_FILTER_TYPES)
+        self.type_filter.blockSignals(False)
+        self.settings.filter_types = list(DEFAULT_FILTER_TYPES)
+        self.store.save_settings(self.settings)
         self.short_filter.blockSignals(True)
         self.short_filter.setCurrentIndex(1)
         self.short_filter.blockSignals(False)
@@ -541,11 +635,17 @@ class MainWindow(QMainWindow):
         return filter_groups(
             self.scan_result.groups,
             character_id=str(self.character_filter.currentData() or ""),
-            data_type=str(self.type_filter.currentData() or ""),
+            data_types=self.type_filter.checked_data(),
             singing=str(self.singing_filter.currentData() or ""),
             short_version=self.short_filter.currentData(),
             search=self.search.text(),
         )
+
+    @Slot()
+    def _type_filter_changed(self) -> None:
+        self.settings.filter_types = self.type_filter.checked_data()
+        self.store.save_settings(self.settings)
+        self.refresh_table()
 
     @Slot()
     def _short_filter_changed(self) -> None:

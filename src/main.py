@@ -215,6 +215,7 @@ def run_acceptance_test(args: argparse.Namespace) -> int:
             save_awb=True,
             save_mp3=True,
             save_acb=False,
+            save_artwork=True,
             include_live=True,
         ),
     )

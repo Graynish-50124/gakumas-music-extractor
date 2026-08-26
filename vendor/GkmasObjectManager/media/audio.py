@@ -109,6 +109,7 @@ class GkmasAWBAudio(GkmasDummyMedia):
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL,  # suppresses console output
                     check=True,
+                    creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
                 )
                 segments = [
                     (f.name, AudioSegment.from_file(f)) for f in Path(tmp_out).iterdir()

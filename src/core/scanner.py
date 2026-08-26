@@ -205,16 +205,19 @@ def filter_groups(
     groups: Iterable[SongGroup],
     character_id: str = "",
     data_type: str = "",
+    data_types: Iterable[str] | None = None,
     singing: str = "",
     short_version: bool | None = None,
     search: str = "",
 ) -> list[SongGroup]:
     needle = search.strip().casefold()
+    selected_types = None if data_types is None else set(data_types)
     return [
         group
         for group in groups
         if (not character_id or group.character_id == character_id)
         and (not data_type or group.data_type == data_type)
+        and (selected_types is None or group.data_type in selected_types)
         and (not singing or group.singing == singing)
         and (short_version is None or group.is_short_version is short_version)
         and (not needle or needle in group.search_text)

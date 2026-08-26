@@ -78,6 +78,7 @@ def test_real_awb_and_wav_extraction(tmp_path: Path) -> None:
             save_flac=True,
             save_awb=True,
             save_mp3=True,
+            save_artwork=True,
         ),
     )
     awb = tmp_path / f"{group.title}＿姫崎莉波.awb"
@@ -128,6 +129,7 @@ def test_real_live_true_wav_extraction(tmp_path: Path) -> None:
             save_wav=True,
             save_flac=True,
             save_awb=False,
+            save_artwork=True,
         ),
     )
     wav = tmp_path / f"{live.title}＿姫崎莉波［ライブ］.wav"

@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from core.extractor import ExtractionEngine
-from core.models import KIND_LIVE, KIND_UNIT, SINGING_INST
+from core.models import KIND_GENERAL, KIND_LIVE, KIND_UNIT, SINGING_INST
 from core.scanner import filter_groups, scan_music_assets
 
 
@@ -75,6 +75,8 @@ def test_filters_search_character_and_kind() -> None:
     )
     assert len(filter_groups(groups, character_id="hrnm")) == 3
     assert len(filter_groups(groups, data_type=KIND_LIVE)) == 2
+    assert len(filter_groups(groups, data_types=[KIND_GENERAL, KIND_LIVE])) == 3
+    assert filter_groups(groups, data_types=[]) == []
     assert len(filter_groups(groups, short_version=True)) == 1
     assert len(filter_groups(groups, short_version=False)) == 2
     assert len(filter_groups(groups, search="短縮版")) == 1

@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import io
+import subprocess
 import zipfile
 from pathlib import Path
+
+from GkmasObjectManager.media.audio import GkmasAWBAudio
 
 from core.audio import _decode_unity_audio_blob, _pack_wav_files
 
@@ -44,3 +47,19 @@ def test_pyinstaller_specs_exclude_fmod_runtime() -> None:
         text = (project / name).read_text(encoding="utf-8")
         assert 'if "fmod" not in source.casefold()' in text
         assert '"pyfmodex", "fmod_toolkit"' in text
+
+
+def test_gom_vgmstream_decoder_hides_windows_console(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_run(command, **kwargs):
+        captured.update(kwargs)
+        output = Path(str(command[4]).replace("?s", "1"))
+        output.write_bytes(_minimal_wav())
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    decoder = object.__new__(GkmasAWBAudio)
+    decoder.ext = "awb"
+    segments = decoder._read_segments(b"test")
+    assert len(segments) == 1
+    assert captured["creationflags"] == getattr(subprocess, "CREATE_NO_WINDOW", 0)

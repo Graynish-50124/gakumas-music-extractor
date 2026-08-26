@@ -14,7 +14,15 @@ from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QCheckBox
 
 from core.config import AppSettings, ConfigStore
-from core.models import FILENAME_TITLE_CHARACTER, KIND_GENERAL, SINGING_VOCAL, SongGroup
+from core.models import (
+    DEFAULT_FILTER_TYPES,
+    FILENAME_TITLE_CHARACTER,
+    KIND_BGM,
+    KIND_GENERAL,
+    KIND_LIVE,
+    SINGING_VOCAL,
+    SongGroup,
+)
 from gui.extraction_dialog import ExtractionDialog
 from gui.main_window import MainWindow
 from gui.settings_dialog import SettingsDialog
@@ -30,6 +38,8 @@ def test_main_window_constructs(tmp_path) -> None:
     assert window.short_filter.itemText(2) == "短縮版のみ"
     assert window.short_filter.currentData() is False
     assert window.character_filter.minimumWidth() >= 220
+    assert window.type_filter.checked_data() == list(DEFAULT_FILTER_TYPES)
+    assert all(window.type_filter.itemText(row) != "すべて" for row in range(window.type_filter.count()))
     assert window.table.columnWidth(3) >= 175
     assert window.result_count_label.text() == "表示: 0 / 0件"
     window.apply_theme("system")
@@ -46,19 +56,33 @@ def test_extraction_dialog_uses_new_filename_default() -> None:
     assert dialog.flac.text() == "FLAC（WAVから変換）"
     assert not dialog.flac.isChecked()
     assert dialog.artwork.isChecked()
+    assert not dialog.artwork_file.isChecked()
     assert all("曲名マッピングが" not in item.text() for item in dialog.findChildren(QCheckBox))
     dialog.close()
     app.processEvents()
 
 
-def test_settings_dialog_persists_flac_default(tmp_path) -> None:
+def test_settings_dialog_persists_extraction_defaults(tmp_path) -> None:
     app = QApplication.instance() or QApplication([])
     store = ConfigStore(tmp_path / "config")
     dialog = SettingsDialog(AppSettings(default_flac=True), store)
     assert dialog.flac.text() == "FLAC（WAVから変換）"
     assert dialog.flac.isChecked()
     assert dialog.result_settings().default_flac
+    assert not dialog.result_settings().default_artwork_file
     dialog.close()
+    app.processEvents()
+
+
+def test_type_filter_is_multi_select_and_persisted(tmp_path) -> None:
+    app = QApplication.instance() or QApplication([])
+    store = ConfigStore(tmp_path / "config")
+    window = MainWindow(AppSettings(auto_scan=False), store, auto_start=False)
+    window.type_filter.set_checked_data([KIND_LIVE, KIND_BGM])
+    window._type_filter_changed()
+    assert window.type_filter.checked_data() == [KIND_LIVE, KIND_BGM]
+    assert store.load_settings().filter_types == [KIND_LIVE, KIND_BGM]
+    window.close()
     app.processEvents()
 
 
@@ -140,11 +164,14 @@ def test_main_window_async_scan_and_filter(tmp_path) -> None:
     window.character_filter.setCurrentIndex(hrnm_index)
     window.search.setText("018")
     app.processEvents()
+    assert window.table.rowCount() >= 1
+    window.type_filter.set_checked_data([*DEFAULT_FILTER_TYPES, KIND_LIVE])
+    window._type_filter_changed()
     assert window.table.rowCount() >= 2
     assert window.result_count_label.text().startswith("表示: ")
     window._reset_filters()
     assert window.character_filter.currentIndex() == 0
-    assert window.type_filter.currentIndex() == 0
+    assert window.type_filter.checked_data() == list(DEFAULT_FILTER_TYPES)
     assert window.singing_filter.currentIndex() == 0
     assert window.short_filter.currentIndex() == 1
     assert window.search.text() == ""

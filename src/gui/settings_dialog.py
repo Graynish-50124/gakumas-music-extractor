@@ -85,13 +85,15 @@ class SettingsDialog(QDialog):
         self.awb = QCheckBox("元AWB")
         self.mp3 = QCheckBox("Manifest収録MP3")
         self.acb = QCheckBox("元ACB")
-        self.artwork = QCheckBox("アルバムアートをPNG保存し、WAV／FLAC／MP3に埋め込む")
+        self.artwork = QCheckBox("アルバムアートをWAV／FLAC／MP3に埋め込む")
+        self.artwork_file = QCheckBox("アルバムアートを画像ファイルでも保存")
         self.wav.setChecked(settings.default_wav)
         self.flac.setChecked(settings.default_flac)
         self.awb.setChecked(settings.default_awb)
         self.mp3.setChecked(settings.default_mp3)
         self.acb.setChecked(settings.default_acb)
         self.artwork.setChecked(settings.default_artwork)
+        self.artwork_file.setChecked(settings.default_artwork_file)
         self.filename_format = QComboBox()
         self.filename_format.addItem("楽曲名＿キャラクター名［ライブ・短縮版など］", FILENAME_TITLE_CHARACTER)
         self.filename_format.addItem("元のファイル名そのまま", FILENAME_ORIGINAL)
@@ -112,6 +114,7 @@ class SettingsDialog(QDialog):
             self.mp3,
             self.acb,
             self.artwork,
+            self.artwork_file,
             self.auto_scan,
         ):
             defaults_form.addRow("", widget)
@@ -158,7 +161,9 @@ class SettingsDialog(QDialog):
             default_mp3=self.mp3.isChecked(),
             default_acb=self.acb.isChecked(),
             default_artwork=self.artwork.isChecked(),
+            default_artwork_file=self.artwork_file.isChecked(),
             filename_format=str(self.filename_format.currentData()),
+            filter_types=list(self.settings.filter_types),
             auto_scan=self.auto_scan.isChecked(),
             online_fallback=self.online_fallback.isChecked(),
             manifest_mode=str(self.mode.currentData()),

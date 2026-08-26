@@ -11,6 +11,14 @@ KIND_CHARACTER = "キャラクター専用曲"
 KIND_UNIT = "ユニット曲"
 KIND_LIVE = "ライブ"
 KIND_BGM = "BGM"
+MUSIC_KINDS = (
+    KIND_GENERAL,
+    KIND_CHARACTER,
+    KIND_UNIT,
+    KIND_LIVE,
+    KIND_BGM,
+)
+DEFAULT_FILTER_TYPES = (KIND_GENERAL, KIND_CHARACTER)
 
 SINGING_VOCAL = "歌入り"
 SINGING_INST = "インスト"
@@ -122,7 +130,8 @@ class ExtractionOptions:
     save_awb: bool = True
     save_mp3: bool = False
     save_acb: bool = False
-    save_artwork: bool = True
+    embed_artwork: bool = True
+    save_artwork: bool = False
     include_live: bool = False
     filename_format: str = FILENAME_TITLE_CHARACTER
 

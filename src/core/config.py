@@ -4,11 +4,11 @@ import json
 import os
 import shutil
 import sys
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-from .models import FILENAME_TITLE_CHARACTER
+from .models import DEFAULT_FILTER_TYPES, FILENAME_TITLE_CHARACTER, MUSIC_KINDS
 
 
 APP_NAME = "GakumasMusicExtractor"
@@ -41,11 +41,20 @@ class AppSettings:
     default_mp3: bool = False
     default_acb: bool = False
     default_artwork: bool = True
+    default_artwork_file: bool = False
     filename_format: str = FILENAME_TITLE_CHARACTER
+    filter_types: list[str] = field(default_factory=lambda: list(DEFAULT_FILTER_TYPES))
     auto_scan: bool = True
     online_fallback: bool = True
     manifest_mode: str = "local_preferred"
     theme: str = "system"
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.filter_types, list):
+            self.filter_types = list(DEFAULT_FILTER_TYPES)
+        else:
+            selected = set(self.filter_types)
+            self.filter_types = [kind for kind in MUSIC_KINDS if kind in selected]
 
     @property
     def resolved_output_dir(self) -> Path:

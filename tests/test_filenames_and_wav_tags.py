@@ -10,6 +10,7 @@ from mutagen.id3 import ID3
 from mutagen.wave import WAVE
 
 from core.audio import (
+    ConvertedAudio,
     convert_wav_to_flac,
     read_flac_embedded_artwork,
     read_flac_tags,
@@ -184,6 +185,46 @@ def test_flac_only_does_not_leave_wav_file(tmp_path) -> None:
     assert written == [flac]
     assert flac.read_bytes().startswith(b"fLaC")
     assert not (tmp_path / "Fluorite＿有村麻央.wav").exists()
+
+
+def test_artwork_is_embedded_without_saving_a_separate_image(tmp_path, monkeypatch) -> None:
+    import core.extractor as extractor_module
+
+    artwork_asset = AssetRef(
+        "img_general_music_jacket_amao-001.png",
+        2,
+        "artwork",
+        len(PNG_ARTWORK),
+        "",
+        "",
+        "resource",
+        object(),
+    )
+    group = _group()
+    group.artwork = artwork_asset
+    group.assets["AWB"] = _asset()
+    engine = ExtractionEngine(None, {"amao": "有村麻央"})
+    monkeypatch.setattr(
+        engine,
+        "_obtain",
+        lambda asset, _index, _total: PNG_ARTWORK if asset is artwork_asset else b"raw",
+    )
+    monkeypatch.setattr(
+        extractor_module,
+        "decode_game_audio_to_wav",
+        lambda _asset_ref, _raw: ConvertedAudio(_wav_with_album(), "audio/wav"),
+    )
+
+    written = engine.extract(
+        [group],
+        [group],
+        ExtractionOptions(output_dir=tmp_path, save_wav=True, save_awb=False),
+    )
+    wav = tmp_path / "Fluorite＿有村麻央.wav"
+    image = tmp_path / "Fluorite＿有村麻央.png"
+    assert written == [wav]
+    assert not image.exists()
+    assert read_wav_embedded_artwork(wav.read_bytes()) == PNG_ARTWORK
 
 
 def test_three_filename_formats_and_live_marker() -> None:

@@ -55,11 +55,15 @@ class ExtractionDialog(QDialog):
         extras = QGroupBox("追加オプション")
         extras_layout = QVBoxLayout(extras)
         self.live = QCheckBox("関連するライブ音源も取得（normal / trueを区別）")
-        self.artwork = QCheckBox("アルバムアートをPNG保存し、WAV／FLAC／MP3に埋め込む")
+        self.artwork = QCheckBox("アルバムアートをWAV／FLAC／MP3に埋め込む")
+        self.artwork_file = QCheckBox("アルバムアートを画像ファイルでも保存")
         self.artwork.setChecked(settings.default_artwork)
-        self.artwork.setToolTip("対応画像がない曲は音源のみ保存します")
+        self.artwork_file.setChecked(settings.default_artwork_file)
+        self.artwork.setToolTip("対応画像がない曲は画像を埋め込まず音源のみ保存します")
+        self.artwork_file.setToolTip("ゲーム内画像の形式（通常はPNG）のまま音源とは別に保存します")
         extras_layout.addWidget(self.live)
         extras_layout.addWidget(self.artwork)
+        extras_layout.addWidget(self.artwork_file)
 
         self.filename_format = QComboBox()
         self.filename_format.addItem("楽曲名＿キャラクター名［ライブ・短縮版など］", FILENAME_TITLE_CHARACTER)
@@ -128,7 +132,8 @@ class ExtractionDialog(QDialog):
             save_awb=self.awb.isChecked(),
             save_mp3=self.mp3.isChecked(),
             save_acb=self.acb.isChecked(),
-            save_artwork=self.artwork.isChecked(),
+            embed_artwork=self.artwork.isChecked(),
+            save_artwork=self.artwork_file.isChecked(),
             include_live=self.live.isChecked(),
             filename_format=str(self.filename_format.currentData()),
         )

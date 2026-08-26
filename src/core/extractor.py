@@ -129,7 +129,7 @@ class ExtractionEngine:
             raw_cache: dict[str, bytes] = {}
             artwork: bytes | None = None
 
-            if options.save_artwork:
+            if options.embed_artwork or options.save_artwork:
                 if group.artwork:
                     artwork_key = (group.artwork.object_id, group.artwork.md5)
                     artwork = artwork_cache.get(artwork_key)
@@ -137,16 +137,25 @@ class ExtractionEngine:
                         artwork = self._obtain(group.artwork, index, total)
                         detect_image_mime(artwork)
                         artwork_cache[artwork_key] = artwork
-                    written.extend(self._save_artwork(group, artwork, options))
+                    if options.save_artwork:
+                        written.extend(self._save_artwork(group, artwork, options))
                 else:
                     self.log(f"{display}: 対応するアルバムアートがありません")
 
+            embedded_artwork = artwork if options.embed_artwork else None
+
             if options.save_awb and "AWB" in group.assets:
-                written.extend(self._save_raw(group, "AWB", options, raw_cache, index, total, artwork))
+                written.extend(
+                    self._save_raw(group, "AWB", options, raw_cache, index, total, embedded_artwork)
+                )
             if options.save_mp3 and "MP3" in group.assets:
-                written.extend(self._save_raw(group, "MP3", options, raw_cache, index, total, artwork))
+                written.extend(
+                    self._save_raw(group, "MP3", options, raw_cache, index, total, embedded_artwork)
+                )
             if options.save_acb and "ACB" in group.assets:
-                written.extend(self._save_raw(group, "ACB", options, raw_cache, index, total, artwork))
+                written.extend(
+                    self._save_raw(group, "ACB", options, raw_cache, index, total, embedded_artwork)
+                )
             if options.save_wav or options.save_flac:
                 source_key = next(
                     (key for key in ("AWB", "LIVE", "ACB") if key in group.assets),
@@ -170,7 +179,7 @@ class ExtractionEngine:
                             converted.data,
                             converted.mimetype,
                             options,
-                            artwork,
+                            embedded_artwork,
                         )
                     )
                     formats = "WAV／FLAC" if options.save_wav and options.save_flac else (
