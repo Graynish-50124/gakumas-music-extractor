@@ -8,6 +8,7 @@ from mutagen.flac import FLAC
 
 from core.config import ConfigStore
 from core.audio import (
+    measure_wav_loudness,
     read_flac_embedded_artwork,
     read_flac_tags,
     read_mp3_embedded_artwork,
@@ -27,7 +28,12 @@ OCTO_ROOT = Path.home() / "gakumas" / "octo"
 def test_real_manifest_acceptance_and_cache() -> None:
     candidate = select_latest_manifest(OCTO_ROOT)
     manifest = load_local_manifest(candidate.path)
-    groups = scan_music_assets(manifest, ConfigStore().load_mapping("song_names.json"))
+    store = ConfigStore()
+    groups = scan_music_assets(
+        manifest,
+        store.load_mapping("song_names.json"),
+        store.load_song_metadata(),
+    )
     group = next(
         item
         for item in groups
@@ -60,7 +66,12 @@ def test_real_manifest_acceptance_and_cache() -> None:
 @pytest.mark.skipif(not OCTO_ROOT.exists(), reason="学マスPC版ローカルデータなし")
 def test_real_awb_and_wav_extraction(tmp_path: Path) -> None:
     manifest = load_local_manifest(select_latest_manifest(OCTO_ROOT).path)
-    groups = scan_music_assets(manifest, ConfigStore().load_mapping("song_names.json"))
+    store = ConfigStore()
+    groups = scan_music_assets(
+        manifest,
+        store.load_mapping("song_names.json"),
+        store.load_song_metadata(),
+    )
     group = next(
         item
         for item in groups
@@ -89,16 +100,21 @@ def test_real_awb_and_wav_extraction(tmp_path: Path) -> None:
     assert awb in written and awb.read_bytes()[:4] == b"AFS2"
     assert wav in written and wav.read_bytes()[:4] in {b"RIFF", b"RF64"}
     assert flac in written and flac.read_bytes()[:4] == b"fLaC"
-    assert read_wav_info_tags(wav.read_bytes()) == {
-        "INAM": group.title,
-        "IART": "姫崎莉波",
-    }
+    wav_tags = read_wav_info_tags(wav.read_bytes())
+    assert wav_tags["INAM"] == group.title
+    assert wav_tags["IART"] == "姫崎莉波"
+    assert wav_tags["IPRD"] == group.metadata.album
+    assert wav_tags["IMUS"] == group.metadata.composer
     assert artwork in written and artwork.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
     assert read_wav_embedded_artwork(wav.read_bytes()) == artwork.read_bytes()
     assert read_flac_tags(flac.read_bytes())["title"] == group.title
     assert read_flac_tags(flac.read_bytes())["artist"] == "姫崎莉波"
-    assert "album" not in read_flac_tags(flac.read_bytes())
+    assert read_flac_tags(flac.read_bytes())["album"] == group.metadata.album
+    assert read_flac_tags(flac.read_bytes())["composer"] == group.metadata.composer
     assert read_flac_embedded_artwork(flac.read_bytes()) == artwork.read_bytes()
+    loudness = measure_wav_loudness(wav.read_bytes())
+    assert loudness.integrated_lufs == pytest.approx(-14.0, abs=0.15)
+    assert loudness.true_peak_dbtp <= -0.9
     parsed_flac = FLAC(flac)
     with wave.open(str(wav), "rb") as stream:
         assert parsed_flac.info.sample_rate == stream.getframerate()
@@ -111,7 +127,12 @@ def test_real_awb_and_wav_extraction(tmp_path: Path) -> None:
 @pytest.mark.skipif(not OCTO_ROOT.exists(), reason="学マスPC版ローカルデータなし")
 def test_real_live_true_wav_extraction(tmp_path: Path) -> None:
     manifest = load_local_manifest(select_latest_manifest(OCTO_ROOT).path)
-    groups = scan_music_assets(manifest, ConfigStore().load_mapping("song_names.json"))
+    store = ConfigStore()
+    groups = scan_music_assets(
+        manifest,
+        store.load_mapping("song_names.json"),
+        store.load_song_metadata(),
+    )
     live = next(
         item
         for item in groups
@@ -141,13 +162,16 @@ def test_real_live_true_wav_extraction(tmp_path: Path) -> None:
         assert stream.getnchannels() == 2
         assert stream.getframerate() == 48_000
         assert stream.getnframes() > 48_000 * 60
-    assert read_wav_info_tags(wav.read_bytes()) == {
-        "INAM": live.title,
-        "IART": "姫崎莉波",
-    }
+    wav_tags = read_wav_info_tags(wav.read_bytes())
+    assert wav_tags["INAM"] == live.title
+    assert wav_tags["IART"] == "姫崎莉波"
+    assert wav_tags["IPRD"] == live.metadata.album
     assert artwork in written and artwork.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
     assert read_wav_embedded_artwork(wav.read_bytes()) == artwork.read_bytes()
     assert read_flac_embedded_artwork(flac.read_bytes()) == artwork.read_bytes()
+    loudness = measure_wav_loudness(wav.read_bytes())
+    assert loudness.integrated_lufs == pytest.approx(-14.0, abs=0.15)
+    assert loudness.true_peak_dbtp <= -0.9
     parsed_flac = FLAC(flac)
     assert parsed_flac.info.channels == 2
     assert parsed_flac.info.sample_rate == 48_000

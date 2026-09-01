@@ -15,7 +15,9 @@ from .models import (
     SINGING_VOCAL,
     AssetRef,
     SongGroup,
+    SongMetadata,
 )
+from .song_metadata import resolve_song_metadata
 
 
 GENERAL_RE = re.compile(
@@ -81,8 +83,13 @@ def _artwork_names(group: SongGroup) -> tuple[str, ...]:
     )
 
 
-def scan_music_assets(manifest: Any, song_names: dict[str, str] | None = None) -> list[SongGroup]:
+def scan_music_assets(
+    manifest: Any,
+    song_names: dict[str, str] | None = None,
+    song_metadata: dict[str, SongMetadata] | None = None,
+) -> list[SongGroup]:
     mapping = song_names or {}
+    metadata_catalog = song_metadata or {}
     grouped: dict[str, SongGroup] = {}
     artworks = {
         str(obj.name).casefold(): _asset_ref(obj)
@@ -173,6 +180,7 @@ def scan_music_assets(manifest: Any, song_names: dict[str, str] | None = None) -
 
     for group in grouped.values():
         group.title = _song_title(mapping, group)
+        group.metadata = resolve_song_metadata(metadata_catalog, group)
         group.artwork = next(
             (artworks[name.casefold()] for name in _artwork_names(group) if name.casefold() in artworks),
             None,

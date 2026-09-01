@@ -78,6 +78,7 @@ class SongGroup:
     version: str
     base_name: str
     title: str = ""
+    metadata: SongMetadata = field(default_factory=lambda: SongMetadata())
     assets: dict[str, AssetRef] = field(default_factory=dict)
     artwork: AssetRef | None = None
     related_live_keys: list[str] = field(default_factory=list)
@@ -108,11 +109,62 @@ class SongGroup:
                 self.version,
                 self.base_name,
                 self.title,
+                self.metadata.search_text,
                 artwork_name,
                 "短縮版" if self.is_short_version else "通常版",
                 names,
             )
         ).casefold()
+
+
+@dataclass(frozen=True)
+class SongMetadata:
+    """Officially sourced music credits and release information."""
+
+    performer: str = ""
+    lyricist: str = ""
+    composer: str = ""
+    arranger: str = ""
+    album: str = ""
+    release_date: str = ""
+    track_number: str = ""
+    disc_number: str = ""
+    label: str = ""
+    copyright: str = ""
+    source_url: str = ""
+    credit_source_url: str = ""
+    verified_at: str = ""
+
+    @property
+    def has_official_info(self) -> bool:
+        return any(
+            (
+                self.performer,
+                self.lyricist,
+                self.composer,
+                self.arranger,
+                self.album,
+                self.release_date,
+                self.track_number,
+                self.disc_number,
+                self.label,
+                self.copyright,
+            )
+        )
+
+    @property
+    def search_text(self) -> str:
+        return " ".join(
+            (
+                self.performer,
+                self.lyricist,
+                self.composer,
+                self.arranger,
+                self.album,
+                self.release_date,
+                self.label,
+            )
+        )
 
 
 @dataclass
@@ -127,10 +179,12 @@ class ExtractionOptions:
     output_dir: Path
     save_wav: bool = True
     save_flac: bool = False
+    normalize_loudness: bool = True
     save_awb: bool = True
     save_mp3: bool = False
     save_acb: bool = False
     embed_artwork: bool = True
+    embed_official_metadata: bool = True
     save_artwork: bool = False
     include_live: bool = False
     filename_format: str = FILENAME_TITLE_CHARACTER

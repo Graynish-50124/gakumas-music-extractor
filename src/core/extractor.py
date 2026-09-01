@@ -14,6 +14,7 @@ from .audio import (
     convert_wav_to_flac,
     decode_game_audio_to_wav,
     detect_image_mime,
+    normalize_wav_loudness,
     write_mp3_tags,
     write_wav_info_tags,
 )
@@ -172,6 +173,11 @@ class ExtractionEngine:
                         f"{display}: 音源をWAVへデコード中...",
                     )
                     converted = decode_game_audio_to_wav(asset, raw)
+                    if options.normalize_loudness:
+                        self.progress(
+                            int((index + 0.85) / total * 100),
+                            f"{display}: 音量を測定・調整中...",
+                        )
                     written.extend(
                         self._save_converted(
                             group,
@@ -226,12 +232,16 @@ class ExtractionEngine:
         filename = self._output_filename(group, asset, asset.extension, options.filename_format)
         target = options.output_dir / filename
         output = raw
-        if format_key == "MP3" and artwork is not None:
+        metadata = group.metadata if options.embed_official_metadata else None
+        if format_key == "MP3" and (
+            artwork is not None or (metadata is not None and metadata.has_official_info)
+        ):
             output = write_mp3_tags(
                 raw,
                 title=group.title or group.internal_id,
                 artist=self._character_name(group),
                 artwork=artwork,
+                metadata=metadata,
             )
         if self._write_new(target, output):
             self.log(f"{asset.name} を保存")
@@ -250,6 +260,7 @@ class ExtractionEngine:
     ) -> list[Path]:
         title = group.title or group.internal_id
         artist = self._character_name(group)
+        metadata = group.metadata if options.embed_official_metadata else None
         samples: list[tuple[int | None, bytes]] = []
         if mimetype != "application/zip":
             samples.append((None, data))
@@ -275,6 +286,19 @@ class ExtractionEngine:
 
         written: list[Path] = []
         for counter, wav_data in samples:
+            if options.normalize_loudness:
+                normalized = normalize_wav_loudness(wav_data)
+                wav_data = normalized.data
+                sample_suffix = f" #{counter}" if counter is not None else ""
+                if normalized.applied:
+                    self.log(
+                        f"{title}{sample_suffix}: 音量を "
+                        f"{normalized.before.integrated_lufs:.2f} → "
+                        f"{normalized.output_lufs:.2f} LUFSへ調整 "
+                        f"（最大 {normalized.output_true_peak_dbtp:.2f} dBTP）"
+                    )
+                else:
+                    self.log(f"{title}{sample_suffix}: 無音または調整不要のため音量を維持")
             if options.save_wav:
                 target = target_for("wav", counter)
                 tagged = write_wav_info_tags(
@@ -282,6 +306,7 @@ class ExtractionEngine:
                     title=title,
                     artist=artist,
                     artwork=artwork,
+                    metadata=metadata,
                 )
                 if self._write_new(target, tagged):
                     written.append(target)
@@ -298,6 +323,7 @@ class ExtractionEngine:
                     title=title,
                     artist=artist,
                     artwork=artwork,
+                    metadata=metadata,
                 )
                 if self._write_new(target, flac):
                     written.append(target)

@@ -55,13 +55,28 @@ class ExtractionDialog(QDialog):
         extras = QGroupBox("追加オプション")
         extras_layout = QVBoxLayout(extras)
         self.live = QCheckBox("関連するライブ音源も取得（normal / trueを区別）")
+        self.normalize_loudness = QCheckBox(
+            "音量を一般的な配信音源にそろえる（-14 LUFS、WAV／FLACのみ）"
+        )
+        self.official_metadata = QCheckBox("正式な楽曲情報をWAV／FLAC／MP3へ書き込む")
         self.artwork = QCheckBox("アルバムアートをWAV／FLAC／MP3に埋め込む")
         self.artwork_file = QCheckBox("アルバムアートを画像ファイルでも保存")
+        self.official_metadata.setChecked(settings.default_official_metadata)
+        self.normalize_loudness.setChecked(settings.default_normalize_loudness)
         self.artwork.setChecked(settings.default_artwork)
         self.artwork_file.setChecked(settings.default_artwork_file)
+        self.official_metadata.setToolTip(
+            "公式サイトで確認済みの作詞・作曲・編曲・収録作品・発売日などを付与します"
+        )
+        self.normalize_loudness.setToolTip(
+            "聴感上の音量を-14 LUFSへ調整し、音割れ防止のため最大ピークを-1 dBTPに抑えます。"
+            "元AWB／ACB／MP3は変更しません"
+        )
         self.artwork.setToolTip("対応画像がない曲は画像を埋め込まず音源のみ保存します")
         self.artwork_file.setToolTip("ゲーム内画像の形式（通常はPNG）のまま音源とは別に保存します")
         extras_layout.addWidget(self.live)
+        extras_layout.addWidget(self.normalize_loudness)
+        extras_layout.addWidget(self.official_metadata)
         extras_layout.addWidget(self.artwork)
         extras_layout.addWidget(self.artwork_file)
 
@@ -86,6 +101,7 @@ class ExtractionDialog(QDialog):
         note = QLabel(
             "WAVはゲーム内のHCA等の圧縮音源をPCMへデコードしたものです。\n"
             "FLACはそのWAV相当のPCMデータから可逆圧縮で変換します。\n"
+            "音量補正はWAV／FLACだけに適用し、元AWB／ACB／MP3は変更しません。\n"
             "CD等のロスレスマスターを復元するものではありません。\n"
             "曲名が未登録の場合は内部名を使用します。同名衝突時だけ識別子を補います。"
         )
@@ -129,10 +145,12 @@ class ExtractionDialog(QDialog):
             output_dir=Path(self.output.text().strip()).expanduser(),
             save_wav=self.wav.isChecked(),
             save_flac=self.flac.isChecked(),
+            normalize_loudness=self.normalize_loudness.isChecked(),
             save_awb=self.awb.isChecked(),
             save_mp3=self.mp3.isChecked(),
             save_acb=self.acb.isChecked(),
             embed_artwork=self.artwork.isChecked(),
+            embed_official_metadata=self.official_metadata.isChecked(),
             save_artwork=self.artwork_file.isChecked(),
             include_live=self.live.isChecked(),
             filename_format=str(self.filename_format.currentData()),

@@ -85,15 +85,21 @@ class SettingsDialog(QDialog):
         self.awb = QCheckBox("元AWB")
         self.mp3 = QCheckBox("Manifest収録MP3")
         self.acb = QCheckBox("元ACB")
+        self.normalize_loudness = QCheckBox(
+            "音量を一般的な配信音源にそろえる（-14 LUFS、WAV／FLACのみ）"
+        )
         self.artwork = QCheckBox("アルバムアートをWAV／FLAC／MP3に埋め込む")
         self.artwork_file = QCheckBox("アルバムアートを画像ファイルでも保存")
+        self.official_metadata = QCheckBox("正式な楽曲情報をWAV／FLAC／MP3へ書き込む")
         self.wav.setChecked(settings.default_wav)
         self.flac.setChecked(settings.default_flac)
         self.awb.setChecked(settings.default_awb)
         self.mp3.setChecked(settings.default_mp3)
         self.acb.setChecked(settings.default_acb)
+        self.normalize_loudness.setChecked(settings.default_normalize_loudness)
         self.artwork.setChecked(settings.default_artwork)
         self.artwork_file.setChecked(settings.default_artwork_file)
+        self.official_metadata.setChecked(settings.default_official_metadata)
         self.filename_format = QComboBox()
         self.filename_format.addItem("楽曲名＿キャラクター名［ライブ・短縮版など］", FILENAME_TITLE_CHARACTER)
         self.filename_format.addItem("元のファイル名そのまま", FILENAME_ORIGINAL)
@@ -113,8 +119,10 @@ class SettingsDialog(QDialog):
             self.awb,
             self.mp3,
             self.acb,
+            self.normalize_loudness,
             self.artwork,
             self.artwork_file,
+            self.official_metadata,
             self.auto_scan,
         ):
             defaults_form.addRow("", widget)
@@ -126,8 +134,9 @@ class SettingsDialog(QDialog):
         mapping_layout = QVBoxLayout(mapping_tab)
         mapping_layout.addWidget(
             QLabel(
-                "characters.json と song_names.json は設定フォルダにあります。\n"
-                "未知IDや曲名は推測せず、ここへ明示的に登録した値だけを表示します。"
+                "characters.json、song_names.json、song_metadata.json は設定フォルダにあります。\n"
+                "正式情報は同梱カタログを使用し、song_metadata.jsonで項目単位に上書きできます。\n"
+                "未知情報は推測せず、公式に確認できた値だけを表示・書き込みします。"
             )
         )
         open_button = QPushButton("マッピング設定フォルダを開く")
@@ -157,11 +166,13 @@ class SettingsDialog(QDialog):
             output_dir=self.output.text(),
             default_wav=self.wav.isChecked(),
             default_flac=self.flac.isChecked(),
+            default_normalize_loudness=self.normalize_loudness.isChecked(),
             default_awb=self.awb.isChecked(),
             default_mp3=self.mp3.isChecked(),
             default_acb=self.acb.isChecked(),
             default_artwork=self.artwork.isChecked(),
             default_artwork_file=self.artwork_file.isChecked(),
+            default_official_metadata=self.official_metadata.isChecked(),
             filename_format=str(self.filename_format.currentData()),
             filter_types=list(self.settings.filter_types),
             auto_scan=self.auto_scan.isChecked(),

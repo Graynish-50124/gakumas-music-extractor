@@ -57,6 +57,10 @@ def test_extraction_dialog_uses_new_filename_default() -> None:
     assert not dialog.flac.isChecked()
     assert dialog.artwork.isChecked()
     assert not dialog.artwork_file.isChecked()
+    assert dialog.official_metadata.isChecked()
+    assert dialog.normalize_loudness.isChecked()
+    assert dialog.options().normalize_loudness
+    assert dialog.options().embed_official_metadata
     assert all("曲名マッピングが" not in item.text() for item in dialog.findChildren(QCheckBox))
     dialog.close()
     app.processEvents()
@@ -70,6 +74,8 @@ def test_settings_dialog_persists_extraction_defaults(tmp_path) -> None:
     assert dialog.flac.isChecked()
     assert dialog.result_settings().default_flac
     assert not dialog.result_settings().default_artwork_file
+    assert dialog.result_settings().default_official_metadata
+    assert dialog.result_settings().default_normalize_loudness
     dialog.close()
     app.processEvents()
 

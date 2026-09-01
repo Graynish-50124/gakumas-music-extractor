@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import base64
 import io
+import math
+import struct
 import wave
 
 import pytest
@@ -12,6 +14,8 @@ from mutagen.wave import WAVE
 from core.audio import (
     ConvertedAudio,
     convert_wav_to_flac,
+    measure_wav_loudness,
+    normalize_wav_loudness,
     read_flac_embedded_artwork,
     read_flac_tags,
     read_mp3_embedded_artwork,
@@ -34,6 +38,7 @@ from core.models import (
     AssetRef,
     ExtractionOptions,
     SongGroup,
+    SongMetadata,
 )
 
 
@@ -54,12 +59,39 @@ def _wav_with_album() -> bytes:
     return bytes(data)
 
 
+def _quiet_sine_wav(duration: float = 3.0, sample_rate: int = 44_100) -> bytes:
+    output = io.BytesIO()
+    frames = bytearray()
+    for index in range(round(duration * sample_rate)):
+        sample = round(math.sin(2 * math.pi * 440 * index / sample_rate) * 0.03 * 32767)
+        frames.extend(struct.pack("<hh", sample, sample))
+    with wave.open(output, "wb") as wav:
+        wav.setnchannels(2)
+        wav.setsampwidth(2)
+        wav.setframerate(sample_rate)
+        wav.writeframes(frames)
+    return output.getvalue()
+
+
 PNG_ARTWORK = b"\x89PNG\r\n\x1a\n" + b"test-cover-art"
 MINIMAL_FLAC = base64.b64decode(
     "ZkxhQwAAACIAEAAQAAAMAAAMAfQA8AAAABBwvI9LcqhpIUaL+OhEHc5RhAAALAwAAABM"
     "YXZmNjMuMS4xMDEBAAAAFAAAAGVuY29kZXI9TGF2ZjYzLjEuMTAx//hkCAAPzgAAAA6F"
 )
 HAS_FFMPEG = verify_audio_components()["ffmpeg"] is not None
+OFFICIAL_METADATA = SongMetadata(
+    performer="初星学園",
+    lyricist="作詞者",
+    composer="作曲者",
+    arranger="編曲者",
+    album="正式リリース名",
+    release_date="2025-04-02",
+    track_number="2",
+    disc_number="1",
+    label="ASOBINOTES",
+    copyright="権利表記",
+    source_url="https://gakuen-label.idolmaster-official.jp/discography/example",
+)
 
 
 def _asset(name: str = "sud_music_general_amao-001-amao_game.awb") -> AssetRef:
@@ -131,6 +163,45 @@ def test_mp3_title_artist_and_cover_art_tags() -> None:
     assert read_mp3_embedded_artwork(tagged) == PNG_ARTWORK
 
 
+def test_official_metadata_is_written_to_wav_and_id3() -> None:
+    tagged = write_wav_info_tags(
+        _wav_with_album(),
+        title="桜フォトグラフ",
+        artist="姫崎莉波",
+        metadata=OFFICIAL_METADATA,
+    )
+    info = read_wav_info_tags(tagged)
+    assert info["IPRD"] == "正式リリース名"
+    assert info["IMUS"] == "作曲者"
+    assert info["IWRI"] == "作詞者"
+    assert info["ICRD"] == "2025-04-02"
+    assert info["ITRK"] == "2"
+    tags = WAVE(io.BytesIO(tagged)).tags
+    assert tags is not None
+    assert str(tags["TALB"]) == "正式リリース名"
+    assert str(tags["TCOM"]) == "作曲者"
+    assert str(tags["TEXT"]) == "作詞者"
+    assert str(tags["TXXX:ARRANGER"]) == "編曲者"
+
+
+def test_official_metadata_is_written_to_mp3() -> None:
+    tagged = write_mp3_tags(
+        b"\xff\xfb\x90\x64" + b"\x00" * 256,
+        title="桜フォトグラフ",
+        artist="姫崎莉波",
+        metadata=OFFICIAL_METADATA,
+    )
+    tags = ID3(io.BytesIO(tagged))
+    assert str(tags["TALB"]) == "正式リリース名"
+    assert str(tags["TPE2"]) == "初星学園"
+    assert str(tags["TCOM"]) == "作曲者"
+    assert str(tags["TEXT"]) == "作詞者"
+    assert str(tags["TXXX:ARRANGER"]) == "編曲者"
+    assert str(tags["TRCK"]) == "2"
+    assert str(tags["TPOS"]) == "1"
+    assert str(tags["TPUB"]) == "ASOBINOTES"
+
+
 def test_flac_metadata_writer_does_not_require_ffmpeg() -> None:
     flac = write_flac_tags(
         MINIMAL_FLAC,
@@ -142,6 +213,25 @@ def test_flac_metadata_writer_does_not_require_ffmpeg() -> None:
     assert read_flac_tags(flac)["artist"] == "有村麻央"
     assert "album" not in read_flac_tags(flac)
     assert read_flac_embedded_artwork(flac) == PNG_ARTWORK
+
+
+def test_official_metadata_is_written_to_flac() -> None:
+    flac = write_flac_tags(
+        MINIMAL_FLAC,
+        title="桜フォトグラフ",
+        artist="姫崎莉波",
+        artwork=None,
+        metadata=OFFICIAL_METADATA,
+    )
+    tags = read_flac_tags(flac)
+    assert tags["album"] == "正式リリース名"
+    assert tags["albumartist"] == "初星学園"
+    assert tags["composer"] == "作曲者"
+    assert tags["lyricist"] == "作詞者"
+    assert tags["arranger"] == "編曲者"
+    assert tags["date"] == "2025-04-02"
+    assert tags["tracknumber"] == "2"
+    assert tags["organization"] == "ASOBINOTES"
 
 
 @pytest.mark.skipif(not HAS_FFMPEG, reason="同梱FFmpegなし")
@@ -162,6 +252,35 @@ def test_wav_to_flac_preserves_pcm_and_writes_metadata() -> None:
     assert read_flac_tags(flac)["artist"] == "有村麻央"
     assert "album" not in read_flac_tags(flac)
     assert read_flac_embedded_artwork(flac) == PNG_ARTWORK
+
+
+@pytest.mark.skipif(not HAS_FFMPEG, reason="同梱FFmpegなし")
+def test_loudness_normalization_reaches_streaming_level_without_clipping() -> None:
+    source = _quiet_sine_wav()
+    before = measure_wav_loudness(source)
+    normalized = normalize_wav_loudness(source)
+    after = measure_wav_loudness(normalized.data)
+
+    assert before.integrated_lufs < -20.0
+    assert normalized.applied
+    assert after.integrated_lufs == pytest.approx(-14.0, abs=0.15)
+    assert after.true_peak_dbtp <= -0.9
+    assert normalized.output_lufs == pytest.approx(after.integrated_lufs, abs=0.15)
+    with wave.open(io.BytesIO(source), "rb") as original_wav:
+        original_spec = (
+            original_wav.getframerate(),
+            original_wav.getnchannels(),
+            original_wav.getsampwidth(),
+            original_wav.getnframes(),
+        )
+    with wave.open(io.BytesIO(normalized.data), "rb") as normalized_wav:
+        normalized_spec = (
+            normalized_wav.getframerate(),
+            normalized_wav.getnchannels(),
+            normalized_wav.getsampwidth(),
+            normalized_wav.getnframes(),
+        )
+    assert normalized_spec == original_spec
 
 
 @pytest.mark.skipif(not HAS_FFMPEG, reason="同梱FFmpegなし")

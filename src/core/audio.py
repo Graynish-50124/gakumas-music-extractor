@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import io
+import json
+import math
+import os
+import re
 import subprocess
 import tempfile
 import zipfile
@@ -9,7 +13,24 @@ from pathlib import Path
 
 import UnityPy
 from mutagen.flac import FLAC, Picture
-from mutagen.id3 import APIC, ID3, ID3NoHeaderError, TIT2, TPE1
+from mutagen.id3 import (
+    APIC,
+    ID3,
+    ID3NoHeaderError,
+    TALB,
+    TCOP,
+    TCOM,
+    TDRC,
+    TEXT,
+    TIT2,
+    TPE1,
+    TPE2,
+    TPOS,
+    TPUB,
+    TRCK,
+    TXXX,
+    WOAS,
+)
 from mutagen.wave import WAVE
 
 from GkmasObjectManager.const import UNITY_SIGNATURE
@@ -17,7 +38,7 @@ from GkmasObjectManager.object.deobfuscate import GkmasAssetBundleDeobfuscator
 
 from app_bootstrap import component_paths
 
-from .models import AssetRef
+from .models import AssetRef, SongMetadata
 
 
 class AudioConversionError(RuntimeError):
@@ -26,6 +47,32 @@ class AudioConversionError(RuntimeError):
 
 class ComponentMissingError(AudioConversionError):
     pass
+
+
+DEFAULT_LOUDNESS_LUFS = -14.0
+DEFAULT_TRUE_PEAK_DBTP = -1.0
+# A high target LRA tells loudnorm to retain the source dynamics whenever the
+# requested gain fits below the true-peak ceiling. Music is made louder without
+# flattening the dynamics into a broadcast-style range.
+_PRESERVE_DYNAMICS_LRA = 50.0
+
+
+@dataclass(frozen=True)
+class LoudnessStats:
+    integrated_lufs: float
+    true_peak_dbtp: float
+    loudness_range_lu: float
+    threshold_lufs: float
+    target_offset_db: float
+
+
+@dataclass(frozen=True)
+class NormalizedAudio:
+    data: bytes
+    before: LoudnessStats
+    output_lufs: float
+    output_true_peak_dbtp: float
+    applied: bool
 
 
 def _riff_chunk(chunk_id: bytes, payload: bytes) -> bytes:
@@ -96,13 +143,43 @@ def detect_image_mime(data: bytes) -> str:
     raise AudioConversionError("アルバムアートの画像形式を確認できません")
 
 
-def _update_id3(tags: ID3, *, title: str, artist: str, artwork: bytes | None) -> None:
+def _replace_id3_text(tags: ID3, frame_id: str, frame, value: str) -> None:
+    if not value:
+        return
+    tags.delall(frame_id)
+    tags.add(frame(encoding=1, text=[value]))
+
+
+def _update_id3(
+    tags: ID3,
+    *,
+    title: str,
+    artist: str,
+    artwork: bytes | None,
+    metadata: SongMetadata | None = None,
+) -> None:
     tags.delall("TIT2")
     tags.delall("TPE1")
     if title:
         tags.add(TIT2(encoding=1, text=[title]))
     if artist:
         tags.add(TPE1(encoding=1, text=[artist]))
+    if metadata is not None:
+        _replace_id3_text(tags, "TALB", TALB, metadata.album)
+        _replace_id3_text(tags, "TPE2", TPE2, metadata.performer)
+        _replace_id3_text(tags, "TCOM", TCOM, metadata.composer)
+        _replace_id3_text(tags, "TEXT", TEXT, metadata.lyricist)
+        _replace_id3_text(tags, "TDRC", TDRC, metadata.release_date)
+        _replace_id3_text(tags, "TRCK", TRCK, metadata.track_number)
+        _replace_id3_text(tags, "TPOS", TPOS, metadata.disc_number)
+        _replace_id3_text(tags, "TPUB", TPUB, metadata.label)
+        _replace_id3_text(tags, "TCOP", TCOP, metadata.copyright)
+        if metadata.arranger:
+            tags.delall("TXXX:ARRANGER")
+            tags.add(TXXX(encoding=1, desc="ARRANGER", text=[metadata.arranger]))
+        if metadata.source_url:
+            tags.delall("WOAS")
+            tags.add(WOAS(url=metadata.source_url))
     if artwork is not None:
         tags.delall("APIC")
         tags.add(
@@ -116,17 +193,30 @@ def _update_id3(tags: ID3, *, title: str, artist: str, artwork: bytes | None) ->
         )
 
 
-def _write_wav_id3(data: bytes, *, title: str, artist: str, artwork: bytes) -> bytes:
+def _write_wav_id3(
+    data: bytes,
+    *,
+    title: str,
+    artist: str,
+    artwork: bytes | None,
+    metadata: SongMetadata | None,
+) -> bytes:
     stream = io.BytesIO(data)
     try:
         wave = WAVE(stream)
         if wave.tags is None:
             wave.add_tags()
-        _update_id3(wave.tags, title=title, artist=artist, artwork=artwork)
+        _update_id3(
+            wave.tags,
+            title=title,
+            artist=artist,
+            artwork=artwork,
+            metadata=metadata,
+        )
         wave.save(stream, v2_version=3)
         return stream.getvalue()
     except Exception as exc:
-        raise AudioConversionError(f"WAVへのアルバムアート埋め込みに失敗しました: {exc}") from exc
+        raise AudioConversionError(f"WAVへのタグ・アルバムアート埋め込みに失敗しました: {exc}") from exc
 
 
 def _id3_front_cover(tags: ID3 | None) -> bytes | None:
@@ -146,14 +236,27 @@ def read_wav_embedded_artwork(data: bytes) -> bytes | None:
         raise AudioConversionError(f"WAVのアルバムアートを読み込めません: {exc}") from exc
 
 
-def write_mp3_tags(data: bytes, *, title: str, artist: str, artwork: bytes) -> bytes:
+def write_mp3_tags(
+    data: bytes,
+    *,
+    title: str,
+    artist: str,
+    artwork: bytes | None = None,
+    metadata: SongMetadata | None = None,
+) -> bytes:
     stream = io.BytesIO(data)
     try:
         try:
             tags = ID3(stream)
         except ID3NoHeaderError:
             tags = ID3()
-        _update_id3(tags, title=title, artist=artist, artwork=artwork)
+        _update_id3(
+            tags,
+            title=title,
+            artist=artist,
+            artwork=artwork,
+            metadata=metadata,
+        )
         tags.save(stream, v2_version=3)
         return stream.getvalue()
     except Exception as exc:
@@ -175,6 +278,7 @@ def write_flac_tags(
     title: str,
     artist: str,
     artwork: bytes | None,
+    metadata: SongMetadata | None = None,
 ) -> bytes:
     if not data.startswith(b"fLaC"):
         raise AudioConversionError("FLACヘッダーを確認できません")
@@ -185,6 +289,23 @@ def write_flac_tags(
             audio.add_tags()
         audio["title"] = [title] if title else []
         audio["artist"] = [artist] if artist else []
+        if metadata is not None:
+            official_fields = {
+                "album": metadata.album,
+                "albumartist": metadata.performer,
+                "composer": metadata.composer,
+                "lyricist": metadata.lyricist,
+                "arranger": metadata.arranger,
+                "date": metadata.release_date,
+                "tracknumber": metadata.track_number,
+                "discnumber": metadata.disc_number,
+                "organization": metadata.label,
+                "copyright": metadata.copyright,
+                "website": metadata.source_url,
+            }
+            for key, value in official_fields.items():
+                if value:
+                    audio[key] = [value]
         if artwork is not None:
             audio.clear_pictures()
             picture = Picture()
@@ -229,18 +350,31 @@ def write_wav_info_tags(
     title: str,
     artist: str,
     artwork: bytes | None = None,
+    metadata: SongMetadata | None = None,
 ) -> bytes:
-    """Set title/artist and optional cover art while preserving unrelated tags."""
+    """Set common RIFF/ID3 tags while preserving unrelated metadata."""
 
     if len(data) < 12 or data[:4] not in {b"RIFF", b"RF64"} or data[8:12] != b"WAVE":
         raise AudioConversionError("WAVのRIFFヘッダーを確認できません")
 
     top_level: list[bytes] = []
     preserved_info: list[bytes] = []
+    official_info = {
+        b"IPRD": metadata.album if metadata else "",
+        b"IMUS": metadata.composer if metadata else "",
+        b"IWRI": metadata.lyricist if metadata else "",
+        b"ICRD": metadata.release_date if metadata else "",
+        b"ITRK": metadata.track_number if metadata else "",
+        b"IPUB": metadata.label if metadata else "",
+        b"ICOP": metadata.copyright if metadata else "",
+    }
+    replaced_info_ids = {b"INAM", b"IART"} | {
+        key for key, value in official_info.items() if value
+    }
     for chunk_id, payload, raw in _iter_riff_chunks(data, 12, len(data)):
         if chunk_id == b"LIST" and len(payload) >= 4 and payload[:4] == b"INFO":
             for info_id, _info_payload, info_raw in _iter_riff_chunks(payload, 4, len(payload)):
-                if info_id not in {b"INAM", b"IART"}:
+                if info_id not in replaced_info_ids:
                     preserved_info.append(info_raw)
             continue
         top_level.append(raw)
@@ -256,6 +390,9 @@ def write_wav_info_tags(
         preserved_info.append(text_chunk(b"INAM", title))
     if artist:
         preserved_info.append(text_chunk(b"IART", artist))
+    for info_id, value in official_info.items():
+        if value:
+            preserved_info.append(text_chunk(info_id, value))
     if preserved_info:
         top_level.append(_riff_chunk(b"LIST", b"INFO" + b"".join(preserved_info)))
 
@@ -275,8 +412,14 @@ def write_wav_info_tags(
                 break
             cursor += 8 + chunk_size + (chunk_size & 1)
     output = bytes(result)
-    if artwork is not None:
-        output = _write_wav_id3(output, title=title, artist=artist, artwork=artwork)
+    if artwork is not None or (metadata is not None and metadata.has_official_info):
+        output = _write_wav_id3(
+            output,
+            title=title,
+            artist=artist,
+            artwork=artwork,
+            metadata=metadata,
+        )
     return output
 
 
@@ -301,7 +444,9 @@ def verify_audio_components() -> dict[str, Path | None]:
     return component_paths()
 
 
-def _run_audio_tool(command: list[str], tool_name: str, action: str = "音声デコード") -> None:
+def _execute_audio_tool(
+    command: list[str], tool_name: str, action: str = "音声デコード"
+) -> subprocess.CompletedProcess[bytes]:
     completed = subprocess.run(
         command,
         stdout=subprocess.PIPE,
@@ -310,12 +455,220 @@ def _run_audio_tool(command: list[str], tool_name: str, action: str = "音声デ
         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
     )
     if completed.returncode == 0:
-        return
+        return completed
     detail = (completed.stderr or completed.stdout).decode("utf-8", errors="replace").strip()
     if len(detail) > 800:
         detail = detail[-800:]
     suffix = f": {detail}" if detail else ""
     raise AudioConversionError(f"{tool_name}による{action}に失敗しました{suffix}")
+
+
+def _run_audio_tool(command: list[str], tool_name: str, action: str = "音声デコード") -> None:
+    _execute_audio_tool(command, tool_name, action)
+
+
+def _parse_loudnorm_json(output: bytes, *, output_values: bool = False) -> LoudnessStats:
+    text = output.decode("utf-8", errors="replace")
+    documents: list[dict[str, object]] = []
+    for match in re.finditer(r"\{.*?\}", text, flags=re.DOTALL):
+        try:
+            value = json.loads(match.group(0))
+        except (TypeError, ValueError):
+            continue
+        if isinstance(value, dict):
+            documents.append(value)
+    prefix = "output" if output_values else "input"
+    for value in reversed(documents):
+        required = {
+            f"{prefix}_i",
+            f"{prefix}_tp",
+            f"{prefix}_lra",
+            f"{prefix}_thresh",
+        }
+        if not required.issubset(value):
+            continue
+        try:
+            return LoudnessStats(
+                integrated_lufs=float(value[f"{prefix}_i"]),
+                true_peak_dbtp=float(value[f"{prefix}_tp"]),
+                loudness_range_lu=float(value[f"{prefix}_lra"]),
+                threshold_lufs=float(value[f"{prefix}_thresh"]),
+                target_offset_db=float(value.get("target_offset", 0.0)),
+            )
+        except (TypeError, ValueError):
+            continue
+    raise AudioConversionError("FFmpegのラウドネス測定結果を読み取れません")
+
+
+def _wav_pcm_format(data: bytes) -> tuple[int, int, int, int]:
+    if len(data) < 12 or data[:4] not in {b"RIFF", b"RF64"} or data[8:12] != b"WAVE":
+        raise AudioConversionError("音量調整元のWAVヘッダーを確認できません")
+    for chunk_id, payload, _raw in _iter_riff_chunks(data, 12, len(data)):
+        if chunk_id != b"fmt " or len(payload) < 16:
+            continue
+        return (
+            int.from_bytes(payload[0:2], "little"),
+            int.from_bytes(payload[2:4], "little"),
+            int.from_bytes(payload[4:8], "little"),
+            int.from_bytes(payload[14:16], "little"),
+        )
+    raise AudioConversionError("WAVの音声仕様を確認できません")
+
+
+def _pcm_codec(format_tag: int, bits_per_sample: int) -> str:
+    if format_tag == 3:
+        return "pcm_f64le" if bits_per_sample == 64 else "pcm_f32le"
+    return {
+        8: "pcm_u8",
+        16: "pcm_s16le",
+        24: "pcm_s24le",
+        32: "pcm_s32le",
+    }.get(bits_per_sample, "pcm_s16le")
+
+
+def _measure_loudness_file(
+    ffmpeg: Path,
+    source: Path,
+    *,
+    target_lufs: float,
+    max_true_peak_dbtp: float,
+) -> LoudnessStats:
+    completed = _execute_audio_tool(
+        [
+            str(ffmpeg),
+            "-hide_banner",
+            "-nostats",
+            "-i",
+            str(source),
+            "-map",
+            "0:a:0",
+            "-af",
+            (
+                f"loudnorm=I={target_lufs:g}:TP={max_true_peak_dbtp:g}:"
+                f"LRA={_PRESERVE_DYNAMICS_LRA:g}:print_format=json"
+            ),
+            "-f",
+            "null",
+            "NUL" if os.name == "nt" else "/dev/null",
+        ],
+        "FFmpeg",
+        "ラウドネス測定",
+    )
+    return _parse_loudnorm_json(completed.stderr or completed.stdout)
+
+
+def measure_wav_loudness(
+    data: bytes,
+    *,
+    target_lufs: float = DEFAULT_LOUDNESS_LUFS,
+    max_true_peak_dbtp: float = DEFAULT_TRUE_PEAK_DBTP,
+) -> LoudnessStats:
+    """Measure a WAV payload using EBU R128 integrated loudness."""
+
+    _wav_pcm_format(data)
+    ffmpeg = component_paths()["ffmpeg"]
+    if not ffmpeg:
+        raise ComponentMissingError("音量測定に必要なFFmpegが見つかりません")
+    with tempfile.TemporaryDirectory(prefix="gakumas-loudness-measure-") as temp_dir:
+        source = Path(temp_dir) / "source.wav"
+        source.write_bytes(data)
+        return _measure_loudness_file(
+            ffmpeg,
+            source,
+            target_lufs=target_lufs,
+            max_true_peak_dbtp=max_true_peak_dbtp,
+        )
+
+
+def normalize_wav_loudness(
+    data: bytes,
+    *,
+    target_lufs: float = DEFAULT_LOUDNESS_LUFS,
+    max_true_peak_dbtp: float = DEFAULT_TRUE_PEAK_DBTP,
+) -> NormalizedAudio:
+    """Normalize WAV loudness while retaining dynamics when peak headroom allows."""
+
+    format_tag, channels, sample_rate, bits_per_sample = _wav_pcm_format(data)
+    ffmpeg = component_paths()["ffmpeg"]
+    if not ffmpeg:
+        raise ComponentMissingError("音量調整に必要なFFmpegが見つかりません")
+
+    with tempfile.TemporaryDirectory(prefix="gakumas-loudness-") as temp_dir:
+        work = Path(temp_dir)
+        source = work / "source.wav"
+        output = work / "normalized.wav"
+        source.write_bytes(data)
+        before = _measure_loudness_file(
+            ffmpeg,
+            source,
+            target_lufs=target_lufs,
+            max_true_peak_dbtp=max_true_peak_dbtp,
+        )
+        if not math.isfinite(before.integrated_lufs):
+            return NormalizedAudio(
+                data=data,
+                before=before,
+                output_lufs=before.integrated_lufs,
+                output_true_peak_dbtp=before.true_peak_dbtp,
+                applied=False,
+            )
+        if (
+            abs(before.integrated_lufs - target_lufs) <= 0.05
+            and before.true_peak_dbtp <= max_true_peak_dbtp
+        ):
+            return NormalizedAudio(
+                data=data,
+                before=before,
+                output_lufs=before.integrated_lufs,
+                output_true_peak_dbtp=before.true_peak_dbtp,
+                applied=False,
+            )
+
+        filter_value = (
+            f"loudnorm=I={target_lufs:g}:TP={max_true_peak_dbtp:g}:"
+            f"LRA={_PRESERVE_DYNAMICS_LRA:g}:"
+            f"measured_I={before.integrated_lufs:.2f}:"
+            f"measured_TP={before.true_peak_dbtp:.2f}:"
+            f"measured_LRA={before.loudness_range_lu:.2f}:"
+            f"measured_thresh={before.threshold_lufs:.2f}:"
+            f"offset={before.target_offset_db:.2f}:linear=true:print_format=json"
+        )
+        completed = _execute_audio_tool(
+            [
+                str(ffmpeg),
+                "-hide_banner",
+                "-nostats",
+                "-y",
+                "-i",
+                str(source),
+                "-map",
+                "0:a:0",
+                "-map_metadata",
+                "-1",
+                "-af",
+                filter_value,
+                "-ar",
+                str(sample_rate),
+                "-ac",
+                str(channels),
+                "-c:a",
+                _pcm_codec(format_tag, bits_per_sample),
+                str(output),
+            ],
+            "FFmpeg",
+            "ラウドネス正規化",
+        )
+        normalized = output.read_bytes() if output.exists() else b""
+        if not normalized.startswith((b"RIFF", b"RF64")):
+            raise AudioConversionError("FFmpegの音量調整後WAV形式を確認できません")
+        after = _parse_loudnorm_json(completed.stderr or completed.stdout, output_values=True)
+        return NormalizedAudio(
+            data=normalized,
+            before=before,
+            output_lufs=after.integrated_lufs,
+            output_true_peak_dbtp=after.true_peak_dbtp,
+            applied=True,
+        )
 
 
 def convert_wav_to_flac(
@@ -324,6 +677,7 @@ def convert_wav_to_flac(
     title: str,
     artist: str,
     artwork: bytes | None,
+    metadata: SongMetadata | None = None,
 ) -> bytes:
     """Losslessly encode decoded PCM WAV data as tagged FLAC."""
 
@@ -364,7 +718,13 @@ def convert_wav_to_flac(
 
     if not flac.startswith(b"fLaC"):
         raise AudioConversionError("FFmpegのFLAC出力形式を確認できません")
-    return write_flac_tags(flac, title=title, artist=artist, artwork=artwork)
+    return write_flac_tags(
+        flac,
+        title=title,
+        artist=artist,
+        artwork=artwork,
+        metadata=metadata,
+    )
 
 
 def _decode_with_vgmstream(raw: bytes) -> list[bytes]:

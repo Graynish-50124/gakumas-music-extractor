@@ -56,6 +56,7 @@ from core.models import (
     ExtractionOptions,
     ScanResult,
     SongGroup,
+    SongMetadata,
 )
 from core.scanner import filter_groups, scan_music_assets
 from gui.extraction_dialog import ExtractionDialog
@@ -188,10 +189,16 @@ class ScanWorker(QObject):
     failed = Signal(str, str)
     log = Signal(str)
 
-    def __init__(self, settings: AppSettings, song_names: dict[str, str]):
+    def __init__(
+        self,
+        settings: AppSettings,
+        song_names: dict[str, str],
+        song_metadata: dict[str, SongMetadata],
+    ):
         super().__init__()
         self.settings = settings
         self.song_names = song_names
+        self.song_metadata = song_metadata
 
     @Slot()
     def run(self) -> None:
@@ -204,9 +211,12 @@ class ScanWorker(QObject):
                 online_fallback=self.settings.online_fallback,
             )
             self.log.emit(f"Manifest復号・解析成功: Revision {info.revision}")
-            groups = scan_music_assets(manifest, self.song_names)
+            groups = scan_music_assets(manifest, self.song_names, self.song_metadata)
             self.log.emit(f"音楽アセットをグループ化: {len(groups):,}件")
             self.log.emit(f"アルバムアート対応: {sum(group.has_artwork for group in groups):,}件")
+            self.log.emit(
+                f"正式楽曲情報対応: {sum(group.metadata.has_official_info for group in groups):,}件"
+            )
             self.finished.emit(ScanResult(manifest=manifest, info=info, groups=groups))
         except Exception as exc:
             message = str(exc) if isinstance(exc, ManifestError) else "Manifestの読み込みに失敗しました"
@@ -258,7 +268,7 @@ class ExtractionWorker(QObject):
 
 class MainWindow(QMainWindow):
     COLUMNS = (
-        "選択", "曲ID", "曲名", "キャラクター", "種類", "歌唱", "バージョン",
+        "選択", "曲ID", "曲名", "作曲", "収録作品", "キャラクター", "種類", "歌唱", "バージョン",
         "短縮版", "AWB", "MP3", "ACB", "Live", "ジャケット",
     )
 
@@ -275,6 +285,7 @@ class MainWindow(QMainWindow):
         self.store.ensure_mapping_files()
         self.characters = self.store.load_mapping("characters.json")
         self.song_names = self.store.load_mapping("song_names.json")
+        self.song_metadata = self.store.load_song_metadata()
         self.scan_result: ScanResult | None = None
         self.checked_keys: set[str] = set()
         self._populating = False
@@ -313,7 +324,7 @@ class MainWindow(QMainWindow):
         header.addLayout(title_box)
         header.addStretch(1)
         self.rescan_button = QPushButton("再スキャン")
-        self.rescan_button.setToolTip("Manifestと曲名マッピングを読み直します")
+        self.rescan_button.setToolTip("Manifest、曲名、正式楽曲情報を読み直します")
         self.rescan_button.clicked.connect(self.start_scan)
         self.settings_button = QPushButton("設定")
         self.settings_button.setToolTip("データ場所、保存形式、表示テーマなどを変更します")
@@ -380,7 +391,7 @@ class MainWindow(QMainWindow):
         self.short_filter.setCurrentIndex(1)
         self.short_filter.setMinimumWidth(130)
         self.search = QLineEdit()
-        self.search.setPlaceholderText("内部ファイル名、曲ID、キャラID、曲名で検索（例: 018）")
+        self.search.setPlaceholderText("曲名、作詞・作曲者、収録作品、内部IDで検索（例: 018）")
         self.search.setClearButtonEnabled(True)
         self.search.setMinimumWidth(180)
 
@@ -433,7 +444,9 @@ class MainWindow(QMainWindow):
             "選択セル内のどこでもクリックできます。Shift+クリックで範囲選択、"
             "表をドラッグすると青い範囲だけを連続選択できます。"
         )
-        for column, width in enumerate((72, 115, 250, 175, 115, 85, 105, 75, 52, 52, 52, 52, 82)):
+        for column, width in enumerate(
+            (72, 115, 250, 210, 260, 175, 115, 85, 105, 75, 52, 52, 52, 52, 82)
+        ):
             self.table.setColumnWidth(column, width)
         splitter.addWidget(self.table)
 
@@ -496,11 +509,12 @@ class MainWindow(QMainWindow):
         self.store.ensure_mapping_files()
         self.characters = self.store.load_mapping("characters.json")
         self.song_names = self.store.load_mapping("song_names.json")
+        self.song_metadata = self.store.load_song_metadata()
         self._set_busy(True, "Manifestをスキャン中...")
         self.progress_bar.setRange(0, 0)
         self.append_log("ローカルoctocacheevaiを再検出")
         thread = QThread(self)
-        worker = ScanWorker(self.settings, self.song_names)
+        worker = ScanWorker(self.settings, self.song_names, self.song_metadata)
         worker.moveToThread(thread)
         thread.started.connect(worker.run)
         worker.log.connect(self.append_log)
@@ -529,6 +543,8 @@ class MainWindow(QMainWindow):
         self.append_log(f"曲名表示: {named_count:,} / {len(result.groups):,}件")
         short_count = sum(group.is_short_version for group in result.groups)
         self.append_log(f"短縮版を識別: {short_count:,}件")
+        metadata_count = sum(group.metadata.has_official_info for group in result.groups)
+        self.append_log(f"正式楽曲情報: {metadata_count:,} / {len(result.groups):,}件")
         self._rebuild_character_filter()
         self.refresh_table()
         self.progress_bar.setRange(0, 100)
@@ -587,6 +603,8 @@ class MainWindow(QMainWindow):
             values = (
                 group.internal_id,
                 group.title or "—",
+                group.metadata.composer or "—",
+                group.metadata.album or "—",
                 character,
                 group.data_type,
                 group.singing,
@@ -603,7 +621,7 @@ class MainWindow(QMainWindow):
                 item = QTableWidgetItem(value)
                 item.setData(Qt.UserRole, group.key)
                 item.setToolTip(value)
-                if column >= 7:
+                if column >= 9:
                     item.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row, column, item)
         self.table.setSortingEnabled(True)
@@ -784,12 +802,24 @@ class MainWindow(QMainWindow):
             else "なし"
         )
         live = "\n".join(group.related_live_keys) or "なし"
+        metadata = group.metadata
+        official = (
+            f"歌唱（公式表記）: {metadata.performer or '未確認'}\n"
+            f"作詞: {metadata.lyricist or '未確認'}\n"
+            f"作曲: {metadata.composer or '未確認'}\n"
+            f"編曲: {metadata.arranger or '未確認'}\n"
+            f"収録作品: {metadata.album or '未確認'}\n"
+            f"発売日: {metadata.release_date or '未確認'}\n"
+            f"トラック: {metadata.track_number or '未確認'}\n"
+            f"確認元: {metadata.source_url or metadata.credit_source_url or '未確認'}"
+        )
         box = QMessageBox(self)
         box.setWindowTitle("楽曲詳細")
         box.setText(f"{group.title or group.internal_id}\n{group.data_type} / {group.singing} / {group.version}")
         short_label = "はい" if group.is_short_version else ("対象外" if group.data_type == KIND_BGM else "いいえ")
         box.setInformativeText(
             f"短縮版: {short_label}\n\n利用可能データ:\n{assets}"
+            f"\n\n正式楽曲情報:\n{official}"
             f"\n\nアルバムアート:\n{artwork}\n\n関連ライブ:\n{live}"
         )
         box.exec()
@@ -918,6 +948,7 @@ class MainWindow(QMainWindow):
         self.store.ensure_mapping_files()
         self.characters = self.store.load_mapping("characters.json")
         self.song_names = self.store.load_mapping("song_names.json")
+        self.song_metadata = self.store.load_song_metadata()
         self.apply_theme(self.settings.theme)
         new_scan_values = (
             self.settings.game_data_dir,

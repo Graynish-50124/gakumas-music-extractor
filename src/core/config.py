@@ -8,7 +8,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-from .models import DEFAULT_FILTER_TYPES, FILENAME_TITLE_CHARACTER, MUSIC_KINDS
+from .models import DEFAULT_FILTER_TYPES, FILENAME_TITLE_CHARACTER, MUSIC_KINDS, SongMetadata
+from .song_metadata import merge_song_metadata, metadata_key, parse_metadata_document
 
 
 APP_NAME = "GakumasMusicExtractor"
@@ -37,11 +38,13 @@ class AppSettings:
     output_dir: str = ""
     default_wav: bool = True
     default_flac: bool = False
+    default_normalize_loudness: bool = True
     default_awb: bool = True
     default_mp3: bool = False
     default_acb: bool = False
     default_artwork: bool = True
     default_artwork_file: bool = False
+    default_official_metadata: bool = True
     filename_format: str = FILENAME_TITLE_CHARACTER
     filter_types: list[str] = field(default_factory=lambda: list(DEFAULT_FILTER_TYPES))
     auto_scan: bool = True
@@ -91,6 +94,9 @@ class ConfigStore:
             source = defaults / name
             if not target.exists() and source.exists():
                 shutil.copy2(source, target)
+        metadata_overrides = self.root / "song_metadata.json"
+        if not metadata_overrides.exists():
+            metadata_overrides.write_text("{}\n", encoding="utf-8")
 
     def load_mapping(self, name: str) -> dict[str, str]:
         result: dict[str, str] = {}
@@ -105,4 +111,36 @@ class ConfigStore:
                     )
             except (OSError, ValueError, TypeError):
                 continue
+        return result
+
+    def load_song_metadata(self) -> dict[str, SongMetadata]:
+        result: dict[str, SongMetadata] = {}
+        for path in (
+            bundled_root() / "config" / "official_song_metadata.json",
+            self.root / "song_metadata.json",
+        ):
+            if not path.exists():
+                continue
+            try:
+                document: Any = json.loads(path.read_text(encoding="utf-8"))
+                for key, metadata in parse_metadata_document(document).items():
+                    result[key] = merge_song_metadata(
+                        result.get(key, SongMetadata()),
+                        metadata,
+                    )
+            except (OSError, ValueError, TypeError):
+                continue
+        # Also index the catalog by stable game IDs from the bundled master.
+        # This keeps credits attached when an older user song-name override uses
+        # slightly different punctuation or spelling for the same music asset.
+        official_names_path = bundled_root() / "config" / "song_names.json"
+        try:
+            official_names: Any = json.loads(official_names_path.read_text(encoding="utf-8"))
+            if isinstance(official_names, dict):
+                for game_id, title in official_names.items():
+                    metadata = result.get(metadata_key(str(title)))
+                    if metadata is not None:
+                        result.setdefault(metadata_key(str(game_id)), metadata)
+        except (OSError, ValueError, TypeError):
+            pass
         return result

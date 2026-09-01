@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from core.extractor import ExtractionEngine
-from core.models import KIND_GENERAL, KIND_LIVE, KIND_UNIT, SINGING_INST
+from core.models import KIND_GENERAL, KIND_LIVE, KIND_UNIT, SINGING_INST, SongMetadata
 from core.scanner import filter_groups, scan_music_assets
 
 
@@ -81,3 +81,19 @@ def test_filters_search_character_and_kind() -> None:
     assert len(filter_groups(groups, short_version=False)) == 2
     assert len(filter_groups(groups, search="短縮版")) == 1
     assert len(filter_groups(groups, search="018")) == 3
+
+
+def test_official_metadata_is_attached_and_searchable() -> None:
+    groups = scan_music_assets(
+        FakeManifest([FakeObject(1, "sud_music_general_all-018-hrnm_game.awb")]),
+        {"all-018/hrnm": "桜フォトグラフ"},
+        {
+            "桜フォトグラフ": SongMetadata(
+                composer="春川仁志(sixth floor)",
+                album="桜フォトグラフ",
+            )
+        },
+    )
+    assert groups[0].metadata.composer == "春川仁志(sixth floor)"
+    assert filter_groups(groups, search="春川仁志") == groups
+    assert filter_groups(groups, search="桜フォトグラフ") == groups

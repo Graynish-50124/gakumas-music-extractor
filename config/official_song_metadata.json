@@ -1,0 +1,1790 @@
+{
+  "_meta": {
+    "schema": 1,
+    "generated_at": "2026-09-01",
+    "sources": [
+      "https://gakuen-label.idolmaster-official.jp/discography",
+      "https://gamemusic.bn-ent.net/release/680/"
+    ],
+    "policy": "公式レーベル掲載値のみ。未確認項目は空欄。"
+  },
+  "songs": {
+    "36℃ U･B･U": {
+      "lyricist": "Soflan Daichi",
+      "composer": "伊藤 翼",
+      "arranger": "伊藤 翼",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/yrrrxj55r14c",
+      "album": "36℃ U･B･U",
+      "release_date": "2025-09-18",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/yrrrxj55r14c",
+      "verified_at": "2026-09-01"
+    },
+    "36℃ U･B･U [Instrumental]": {
+      "album": "姫崎莉波 3rd Single「36℃ U･B･U」",
+      "release_date": "2026-01-28",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/sx36midc6v5",
+      "lyricist": "Soflan Daichi",
+      "composer": "伊藤 翼",
+      "arranger": "伊藤 翼",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/yrrrxj55r14c",
+      "verified_at": "2026-09-01"
+    },
+    "Allegro": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "30",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "Atmosphere": {
+      "lyricist": "Heart's Cry",
+      "composer": "Heart's Cry",
+      "arranger": "Heart's Cry",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/z2ufqunjs",
+      "album": "Atmosphere",
+      "release_date": "2025-12-09",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/z2ufqunjs",
+      "verified_at": "2026-09-01"
+    },
+    "Atmosphere [Instrumental]": {
+      "album": "葛城リーリヤ 3rd Single「Atmosphere」",
+      "release_date": "2026-04-15",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/1mzhe3po0c-d",
+      "lyricist": "Heart's Cry",
+      "composer": "Heart's Cry",
+      "arranger": "Heart's Cry",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/z2ufqunjs",
+      "verified_at": "2026-09-01"
+    },
+    "Boom Boom Pow": {
+      "lyricist": "KENTZ",
+      "composer": "KENTZ,ERECA",
+      "arranger": "KENTZ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/tjwnhw5jcp06",
+      "album": " Boom Boom Pow",
+      "release_date": "2024-06-20",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/tjwnhw5jcp06",
+      "verified_at": "2026-09-01"
+    },
+    "Boom Boom Pow [Instrumental]": {
+      "album": "花海咲季 2nd Single「Boom Boom Pow」",
+      "release_date": "2025-03-12",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/nx3bdngj1",
+      "lyricist": "KENTZ",
+      "composer": "KENTZ,ERECA",
+      "arranger": "KENTZ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/tjwnhw5jcp06",
+      "verified_at": "2026-09-01"
+    },
+    "Campus mode!!": {
+      "performer": "初星学園",
+      "lyricist": "田淵智也",
+      "composer": "田淵智也",
+      "arranger": "滝澤俊輔（TRYTONELABO）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/mt2_igzpcsbi",
+      "album": "Campus mode!!",
+      "release_date": "2024-06-10",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/mt2_igzpcsbi",
+      "verified_at": "2026-09-01"
+    },
+    "Campus mode!! [Instrumental]": {
+      "album": "花海咲季 1st Single「Fighting My Way」",
+      "release_date": "2024-08-07",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/1qmj4mrhub",
+      "lyricist": "田淵智也",
+      "composer": "田淵智也",
+      "arranger": "滝澤俊輔（TRYTONELABO）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/mt2_igzpcsbi",
+      "verified_at": "2026-09-01"
+    },
+    "Choo Choo Choo": {
+      "album": "十王星南 2nd Single「Our Chant」",
+      "release_date": "2026-02-25",
+      "track_number": "2",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/cm014s9zz134",
+      "verified_at": "2026-09-01"
+    },
+    "Choo Choo Choo [Instrumental]": {
+      "album": "十王星南 2nd Single「Our Chant」",
+      "release_date": "2026-02-25",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/cm014s9zz134",
+      "verified_at": "2026-09-01"
+    },
+    "Cosmetic": {
+      "lyricist": "Stephanie Topalian、MOMONADY",
+      "composer": "MOMONADY、YUKI FUNAKOSHI (Digz, Inc. Group)",
+      "arranger": "YUKI FUNAKOSHI (Digz, Inc. Group)",
+      "performer": "十王星南",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/hs0e69cjtpa",
+      "album": "Cosmetic",
+      "release_date": "2024-12-07",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/hs0e69cjtpa",
+      "verified_at": "2026-09-01"
+    },
+    "EGO": {
+      "lyricist": "Kijibato (Dream Monster)",
+      "composer": "Kijibato (Dream Monster)",
+      "arranger": "Kijibato (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/0545cyi87",
+      "album": "EGO",
+      "release_date": "2025-03-12",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/0545cyi87",
+      "verified_at": "2026-09-01"
+    },
+    "EGO [Instrumental]": {
+      "album": "花海咲季 2nd Single「Boom Boom Pow」",
+      "release_date": "2025-03-12",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/nx3bdngj1",
+      "lyricist": "Kijibato (Dream Monster)",
+      "composer": "Kijibato (Dream Monster)",
+      "arranger": "Kijibato (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/0545cyi87",
+      "verified_at": "2026-09-01"
+    },
+    "ENDLESS DANCE": {
+      "lyricist": "首藤義勝",
+      "composer": "首藤義勝",
+      "arranger": "藤永龍太郎(Elements Garden)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/ju99w-n9c",
+      "album": "ENDLESS DANCE",
+      "release_date": "2025-02-08",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/ju99w-n9c",
+      "verified_at": "2026-09-01"
+    },
+    "ENDLESS DANCE [Instrumental]": {
+      "album": "姫崎莉波 3rd Single「36℃ U･B･U」",
+      "release_date": "2026-01-28",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/sx36midc6v5",
+      "lyricist": "首藤義勝",
+      "composer": "首藤義勝",
+      "arranger": "藤永龍太郎(Elements Garden)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/ju99w-n9c",
+      "verified_at": "2026-09-01"
+    },
+    "Feel Jewel Dream": {
+      "lyricist": "DÉ DÉ MOUSE",
+      "composer": "DÉ DÉ MOUSE",
+      "arranger": "DÉ DÉ MOUSE",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/jomd4kmnko",
+      "album": " Feel Jewel Dream",
+      "release_date": "2024-09-21",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/jomd4kmnko",
+      "verified_at": "2026-09-01"
+    },
+    "Feel Jewel Dream [Instrumental]": {
+      "album": "有村麻央 2nd Single「Feel Jewel Dream」",
+      "release_date": "2025-03-19",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/m2sb92rjnizg",
+      "lyricist": "DÉ DÉ MOUSE",
+      "composer": "DÉ DÉ MOUSE",
+      "arranger": "DÉ DÉ MOUSE",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/jomd4kmnko",
+      "verified_at": "2026-09-01"
+    },
+    "Fighting My Way": {
+      "lyricist": "HIROMI",
+      "composer": "Giga",
+      "arranger": "Giga",
+      "performer": "花海咲季 (CV. 長月あおい)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/e8t8fd7twf",
+      "album": "Fighting My Way",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/e8t8fd7twf",
+      "verified_at": "2026-09-01"
+    },
+    "Fighting My Way [Instrumental]": {
+      "album": "花海咲季 1st Single「Fighting My Way」",
+      "release_date": "2024-08-07",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/1qmj4mrhub",
+      "lyricist": "HIROMI",
+      "composer": "Giga",
+      "arranger": "Giga",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/e8t8fd7twf",
+      "verified_at": "2026-09-01"
+    },
+    "Fluorite": {
+      "lyricist": "やぎぬまかな",
+      "composer": "Moe Shop",
+      "arranger": "Moe Shop",
+      "performer": "有村麻央 (CV. 七瀬つむぎ)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/g600agon3y",
+      "album": "Fluorite",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/g600agon3y",
+      "verified_at": "2026-09-01"
+    },
+    "Fluorite [Instrumental]": {
+      "album": "有村麻央 1st Single「Fluorite」",
+      "release_date": "2024-09-25",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/dh-mvl81gyh5",
+      "lyricist": "やぎぬまかな",
+      "composer": "Moe Shop",
+      "arranger": "Moe Shop",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/g600agon3y",
+      "verified_at": "2026-09-01"
+    },
+    "Fragile Heart": {
+      "lyricist": "アッシュ井上 (Dream Monster)",
+      "composer": "アッシュ井上 (Dream Monster)",
+      "arranger": "アッシュ井上 (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/o1yyzge-f",
+      "album": "Fragile Heart",
+      "release_date": "2025-03-26",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/o1yyzge-f",
+      "verified_at": "2026-09-01"
+    },
+    "Fragile Heart [Instrumental]": {
+      "album": "葛城リーリヤ 2nd Single「極光」",
+      "release_date": "2025-03-26",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/69p2zmxk5",
+      "lyricist": "アッシュ井上 (Dream Monster)",
+      "composer": "アッシュ井上 (Dream Monster)",
+      "arranger": "アッシュ井上 (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/o1yyzge-f",
+      "verified_at": "2026-09-01"
+    },
+    "Howling over the World": {
+      "lyricist": "烏屋茶房",
+      "composer": "烏屋茶房",
+      "arranger": "烏屋茶房",
+      "performer": "花海咲季、月村手毬、藤田ことね",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/1rj53jy41-4",
+      "album": "Howling over the World",
+      "release_date": "2024-08-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/1rj53jy41-4",
+      "verified_at": "2026-09-01"
+    },
+    "Howling over the World [Instrumental]": {
+      "album": "花海咲季 2nd Single「Boom Boom Pow」",
+      "release_date": "2025-03-12",
+      "track_number": "9",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/nx3bdngj1",
+      "lyricist": "烏屋茶房",
+      "composer": "烏屋茶房",
+      "arranger": "烏屋茶房",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/1rj53jy41-4",
+      "verified_at": "2026-09-01"
+    },
+    "Kira Kira": {
+      "lyricist": "Chica",
+      "composer": "Dirty Orange (Digz, Inc. Group)、MOMONADY、Chica",
+      "arranger": "Dirty Orange (Digz, Inc. Group)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/jglt2n4e6yhs",
+      "album": "Kira Kira",
+      "release_date": "2025-03-26",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/jglt2n4e6yhs",
+      "verified_at": "2026-09-01"
+    },
+    "Kira Kira [Instrumental]": {
+      "album": "紫雲清夏 2nd Single「カクシタワタシ」",
+      "release_date": "2025-03-26",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/st18m_ea89",
+      "lyricist": "Chica",
+      "composer": "Dirty Orange (Digz, Inc. Group)、MOMONADY、Chica",
+      "arranger": "Dirty Orange (Digz, Inc. Group)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/jglt2n4e6yhs",
+      "verified_at": "2026-09-01"
+    },
+    "L.U.V": {
+      "lyricist": "諭吉佳作/men",
+      "composer": "諭吉佳作/men",
+      "arranger": "倉内達矢",
+      "performer": "姫崎莉波",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/3e88eu-75z6",
+      "album": "L.U.V",
+      "release_date": "2024-10-19",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/3e88eu-75z6",
+      "verified_at": "2026-09-01"
+    },
+    "L.U.V [Instrumental]": {
+      "album": "姫崎莉波 2nd Single「L.U.V」",
+      "release_date": "2025-03-26",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/0vlnslseibti",
+      "lyricist": "諭吉佳作/men",
+      "composer": "諭吉佳作/men",
+      "arranger": "倉内達矢",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/3e88eu-75z6",
+      "verified_at": "2026-09-01"
+    },
+    "Love & Joy": {
+      "lyricist": "東 優太",
+      "composer": "原 一博",
+      "arranger": "原 一博",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/23i2uzw3u9ew",
+      "album": "Love & Joy",
+      "release_date": "2025-06-20",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/23i2uzw3u9ew",
+      "verified_at": "2026-09-01"
+    },
+    "Love & Joy [Instrumental]": {
+      "album": "紫雲清夏 3rd Single「Love & Joy」",
+      "release_date": "2026-01-28",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/8wehmzw927",
+      "lyricist": "東 優太",
+      "composer": "原 一博",
+      "arranger": "原 一博",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/23i2uzw3u9ew",
+      "verified_at": "2026-09-01"
+    },
+    "Luna say maybe": {
+      "lyricist": "美波",
+      "composer": "美波",
+      "arranger": "美波、真船勝博",
+      "performer": "月村手毬 (CV. 小鹿なお)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/ux77_l7suaev",
+      "album": "Luna say maybe",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/ux77_l7suaev",
+      "verified_at": "2026-09-01"
+    },
+    "Luna say maybe [Instrumental]": {
+      "album": "月村手毬 1st Single「Luna say maybe」",
+      "release_date": "2024-08-07",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/lttsnw1l2",
+      "lyricist": "美波",
+      "composer": "美波",
+      "arranger": "美波、真船勝博",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/ux77_l7suaev",
+      "verified_at": "2026-09-01"
+    },
+    "MY STAGE": {
+      "lyricist": "MOMONADY",
+      "composer": "MOMONADY、YUKI FUNAKOSHI (Digz, Inc. Group)",
+      "arranger": "YUKI FUNAKOSHI (Digz, Inc. Group)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/i9yn9tfpas",
+      "album": "MY STAGE",
+      "release_date": "2026-05-20",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/i9yn9tfpas",
+      "verified_at": "2026-09-01"
+    },
+    "Our Chant": {
+      "performer": "十王星南",
+      "lyricist": "Fra",
+      "composer": "中鶴潤一（Bandai Namco Studios Inc.）、Fra",
+      "arranger": "中鶴潤一（Bandai Namco Studios Inc.）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/ohbh3xvke2",
+      "album": "Our Chant",
+      "release_date": "2025-04-23",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/ohbh3xvke2",
+      "verified_at": "2026-09-01"
+    },
+    "Our Chant [Instrumental]": {
+      "album": "十王星南 2nd Single「Our Chant」",
+      "release_date": "2026-02-25",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/cm014s9zz134",
+      "lyricist": "Fra",
+      "composer": "中鶴潤一（Bandai Namco Studios Inc.）、Fra",
+      "arranger": "中鶴潤一（Bandai Namco Studios Inc.）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/ohbh3xvke2",
+      "verified_at": "2026-09-01"
+    },
+    "Ready go!": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "18",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "Ride on Beat": {
+      "lyricist": "田中龍志 (Rebrast)",
+      "composer": "田中龍志 (Rebrast)、柿迫ヒカル (Rebrast)、早川博隆 (Rebrast)",
+      "arranger": "柿迫ヒカル (Rebrast)、早川博隆 (Rebrast)",
+      "performer": "紫雲清夏",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/tzqois-ne",
+      "album": "Ride on Beat",
+      "release_date": "2024-11-11",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/tzqois-ne",
+      "verified_at": "2026-09-01"
+    },
+    "SEARCH RIGHT": {
+      "lyricist": "大澤めい (Bandai Namco Studios Inc.)",
+      "composer": "涼木シンジ",
+      "arranger": "涼木シンジ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/wmrq_vl1lgj",
+      "album": "SEARCH RIGHT",
+      "release_date": "2026-02-08",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/wmrq_vl1lgj",
+      "verified_at": "2026-09-01"
+    },
+    "SEARCH RIGHT [Instrumental]": {
+      "album": "初星音楽祭 SONG COLLECTION",
+      "release_date": "2026-06-03",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/hapfxhb3mtfj",
+      "lyricist": "大澤めい (Bandai Namco Studios Inc.)",
+      "composer": "涼木シンジ",
+      "arranger": "涼木シンジ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/wmrq_vl1lgj",
+      "verified_at": "2026-09-01"
+    },
+    "Star-mine": {
+      "lyricist": "じん",
+      "composer": "じん",
+      "arranger": "じん",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/7e4g5kjnk",
+      "album": "Begrazia 1st Single「Star-mine」",
+      "release_date": "2025-11-19",
+      "track_number": "1",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/rw81wp5de8",
+      "verified_at": "2026-09-01"
+    },
+    "Star-mine [Instrumental]": {
+      "album": "Begrazia 1st Single「Star-mine」",
+      "release_date": "2025-11-19",
+      "track_number": "5",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/rw81wp5de8",
+      "lyricist": "じん",
+      "composer": "じん",
+      "arranger": "じん",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/7e4g5kjnk",
+      "verified_at": "2026-09-01"
+    },
+    "Superlative": {
+      "lyricist": "siqlo",
+      "composer": "siqlo",
+      "arranger": "siqlo",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/4esfoa0qr_wj",
+      "album": "Superlative",
+      "release_date": "2026-01-06",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/4esfoa0qr_wj",
+      "verified_at": "2026-09-01"
+    },
+    "Superlative [Instrumental]": {
+      "album": "秦谷美鈴 2nd Single「Superlative」",
+      "release_date": "2026-05-20",
+      "track_number": "06",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/dept3p1n-j",
+      "lyricist": "siqlo",
+      "composer": "siqlo",
+      "arranger": "siqlo",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/4esfoa0qr_wj",
+      "verified_at": "2026-09-01"
+    },
+    "Sweet Magic": {
+      "lyricist": "SHOW (Digz, Inc. Group)",
+      "composer": "SHOW (Digz, Inc. Group)",
+      "arranger": "SHOW (Digz, Inc. Group)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/kv7j8gmlsx",
+      "album": "Sweet Magic",
+      "release_date": "2025-01-18",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/kv7j8gmlsx",
+      "verified_at": "2026-09-01"
+    },
+    "TOWN（学マスMix）": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "8",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "Tame-Lie-One-Step": {
+      "lyricist": "東 優太",
+      "composer": "東 優太",
+      "arranger": "東 優太",
+      "performer": "紫雲清夏 (CV. 湊 みや)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/dyh02f40s6",
+      "album": "Tame-Lie-One-Step",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/dyh02f40s6",
+      "verified_at": "2026-09-01"
+    },
+    "Tame-Lie-One-Step [Instrumental]": {
+      "album": "紫雲清夏 1st Single「Tame-Lie-One-Step」",
+      "release_date": "2024-09-25",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/9dkvsxoacnu",
+      "lyricist": "東 優太",
+      "composer": "東 優太",
+      "arranger": "東 優太",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/dyh02f40s6",
+      "verified_at": "2026-09-01"
+    },
+    "The Cute!!!": {
+      "lyricist": "金山秀士(Dream Monster)",
+      "composer": "金山秀士(Dream Monster)",
+      "arranger": "金山秀士(Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/dd95iuiy80",
+      "album": "The Cute!!!",
+      "release_date": "2025-04-29",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/dd95iuiy80",
+      "verified_at": "2026-09-01"
+    },
+    "The Rolling Riceball": {
+      "lyricist": "佐藤貴文（バンダイナムコスタジオ）",
+      "composer": "佐藤貴文（バンダイナムコスタジオ）",
+      "arranger": "半田彬倫",
+      "performer": "花海佑芽 (CV.松田彩音)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/yj5onh47v",
+      "album": "The Rolling Riceball",
+      "release_date": "2024-06-01",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/yj5onh47v",
+      "verified_at": "2026-09-01"
+    },
+    "The Rolling Riceball [Instrumental]": {
+      "album": "花海佑芽 1st Single「The Rolling Riceball」",
+      "release_date": "2025-01-15",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/fd_yw67ln",
+      "lyricist": "佐藤貴文（バンダイナムコスタジオ）",
+      "composer": "佐藤貴文（バンダイナムコスタジオ）",
+      "arranger": "半田彬倫",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/yj5onh47v",
+      "verified_at": "2026-09-01"
+    },
+    "Top Secret": {
+      "lyricist": "SHOW (Digz, Inc. Group)",
+      "composer": "SHOW (Digz, Inc. Group)",
+      "arranger": "SHOW (Digz, Inc. Group)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/yv-hr0-h9rfo",
+      "album": "Top Secret",
+      "release_date": "2025-03-19",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/yv-hr0-h9rfo",
+      "verified_at": "2026-09-01"
+    },
+    "Top Secret [Instrumental]": {
+      "album": "有村麻央 2nd Single「Feel Jewel Dream」",
+      "release_date": "2025-03-19",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/m2sb92rjnizg",
+      "lyricist": "SHOW (Digz, Inc. Group)",
+      "composer": "SHOW (Digz, Inc. Group)",
+      "arranger": "SHOW (Digz, Inc. Group)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/yv-hr0-h9rfo",
+      "verified_at": "2026-09-01"
+    },
+    "Try it now": {
+      "performer": "花海咲季",
+      "lyricist": "Kijibato(Dream Monster)",
+      "composer": "Kijibato(Dream Monster)",
+      "arranger": "Kijibato(Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/alrpflnzdxo",
+      "album": "Try it now",
+      "release_date": "2025-04-02",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/alrpflnzdxo",
+      "verified_at": "2026-09-01"
+    },
+    "Unhappy Light": {
+      "lyricist": "Aira (Dream Monster)",
+      "composer": "Aira (Dream Monster)",
+      "arranger": "Aira (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/qkcejj496x",
+      "album": "Unhappy Light",
+      "release_date": "2025-03-12",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/qkcejj496x",
+      "verified_at": "2026-09-01"
+    },
+    "Unhappy Light [Instrumental]": {
+      "album": "月村手毬 2nd Single「アイヴイ」",
+      "release_date": "2025-03-12",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/0556pr2zx",
+      "lyricist": "Aira (Dream Monster)",
+      "composer": "Aira (Dream Monster)",
+      "arranger": "Aira (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/qkcejj496x",
+      "verified_at": "2026-09-01"
+    },
+    "VEIL": {
+      "lyricist": "GUCCHO",
+      "composer": "GUCCHO, Dubscribe",
+      "arranger": "Dubscribe, GUCCHO",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/n7naevfao3",
+      "album": "VEIL",
+      "release_date": "2026-04-30",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/n7naevfao3",
+      "verified_at": "2026-09-01"
+    },
+    "Wake up!!": {
+      "lyricist": "田中透真 (Dream Monster)",
+      "composer": "田中透真 (Dream Monster)",
+      "arranger": "アッシュ井上(Dream Monster)、田中透真 (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/e36tqyq9nx",
+      "album": "Wake up!!",
+      "release_date": "2024-07-24",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/e36tqyq9nx",
+      "verified_at": "2026-09-01"
+    },
+    "White Night! White Wish!": {
+      "lyricist": "林 英樹",
+      "composer": "佐藤純一(fhána)",
+      "arranger": "佐藤純一(fhána)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/2q-imn2uac",
+      "performer": "藤田ことね、葛城リーリヤ、花海佑芽",
+      "album": "White Night! White Wish!",
+      "release_date": "2024-11-29",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/2q-imn2uac",
+      "verified_at": "2026-09-01"
+    },
+    "White Night! White Wish! [Instrumental]": {
+      "lyricist": "林 英樹",
+      "composer": "佐藤純一(fhána)",
+      "arranger": "佐藤純一(fhána)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/mh4k09q4-26m",
+      "album": "Season Solo Collection Vol.4「White Night! White Wish!」",
+      "release_date": "2024-12-11",
+      "track_number": "12",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/mh4k09q4-26m",
+      "verified_at": "2026-09-01"
+    },
+    "Wildest Flower": {
+      "lyricist": "HIROMI",
+      "composer": "Giga",
+      "arranger": "Giga",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/2yq6xtx-6n",
+      "album": "Wildest Flower",
+      "release_date": "2026-03-20",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/2yq6xtx-6n",
+      "verified_at": "2026-09-01"
+    },
+    "Wonder Scale": {
+      "lyricist": "大森祥子",
+      "composer": "兼松 衆",
+      "arranger": "兼松 衆",
+      "performer": "倉本千奈 (CV. 伊藤舞音)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/2cs4vbg-vg0",
+      "album": "Wonder Scale",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/2cs4vbg-vg0",
+      "verified_at": "2026-09-01"
+    },
+    "Wonder Scale [Instrumental]": {
+      "album": "倉本千奈 1st Single「Wonder Scale」",
+      "release_date": "2024-08-28",
+      "track_number": "4 ",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/6qmd6ely1",
+      "lyricist": "大森祥子",
+      "composer": "兼松 衆",
+      "arranger": "兼松 衆",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/2cs4vbg-vg0",
+      "verified_at": "2026-09-01"
+    },
+    "Yellow Big Bang！": {
+      "lyricist": "やぎぬまかな",
+      "composer": "瀬尾祥太郎 (MONACA)",
+      "arranger": "瀬尾祥太郎 (MONACA)",
+      "performer": "藤田ことね (CV. 飯田ヒカル)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/9ar17gq88q1",
+      "album": "Yellow Big Bang！",
+      "release_date": "2024-06-11",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/9ar17gq88q1",
+      "verified_at": "2026-09-01"
+    },
+    "Yellow Big Bang！ [Instrumental]": {
+      "album": "藤田ことね 2nd Single「Yellow Big Bang！」",
+      "release_date": "2025-03-12",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/4_x3vrtcp",
+      "lyricist": "やぎぬまかな",
+      "composer": "瀬尾祥太郎 (MONACA)",
+      "arranger": "瀬尾祥太郎 (MONACA)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/9ar17gq88q1",
+      "verified_at": "2026-09-01"
+    },
+    "clumsy trick": {
+      "lyricist": "渡辺 翔",
+      "composer": "渡辺 翔",
+      "arranger": "奈須野 新平",
+      "performer": "姫崎莉波 (CV. 薄井友里)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/habcgw0wi5",
+      "album": "clumsy trick",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/habcgw0wi5",
+      "verified_at": "2026-09-01"
+    },
+    "clumsy trick [Instrumental]": {
+      "album": "姫崎莉波 1st Single「clumsy trick」",
+      "release_date": "2024-08-28",
+      "track_number": "4 ",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/cu04mx0hi_ri",
+      "lyricist": "渡辺 翔",
+      "composer": "渡辺 翔",
+      "arranger": "奈須野 新平",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/habcgw0wi5",
+      "verified_at": "2026-09-01"
+    },
+    "marble heart": {
+      "lyricist": "品川 樹",
+      "composer": "須藤幽玄",
+      "arranger": "須藤幽玄",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/161a8ag6q",
+      "album": "marble heart",
+      "release_date": "2025-03-05",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/161a8ag6q",
+      "verified_at": "2026-09-01"
+    },
+    "「ねえ、言っちゃうよ。」": {
+      "lyricist": "アオワイファイ",
+      "composer": "アオワイファイ",
+      "arranger": "アオワイファイ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/lw9o907oym",
+      "album": "「ねえ、言っちゃうよ。」",
+      "release_date": "2026-08-18",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/lw9o907oym",
+      "verified_at": "2026-09-01"
+    },
+    "おつかれさま！": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "6",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "おでかけ♪": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "14",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "お任せくださいませ": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "33",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "がむしゃらに行こう！": {
+      "lyricist": "SHOW",
+      "composer": "SHOW、Mitsu.J",
+      "arranger": "Mitsu.J",
+      "performer": "花海咲季・月村手毬・藤田ことね",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/4rt5aja0gach",
+      "album": "がむしゃらに行こう！",
+      "release_date": "2024-08-09",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/4rt5aja0gach",
+      "verified_at": "2026-09-01"
+    },
+    "がむしゃらに行こう！ [Instrumental]": {
+      "album": "花海咲季 2nd Single「Boom Boom Pow」",
+      "release_date": "2025-03-12",
+      "track_number": "8",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/nx3bdngj1",
+      "lyricist": "SHOW",
+      "composer": "SHOW、Mitsu.J",
+      "arranger": "Mitsu.J",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/4rt5aja0gach",
+      "verified_at": "2026-09-01"
+    },
+    "きみの好きな私": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "32",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "たいせつなもの": {
+      "performer": "秦谷美鈴",
+      "lyricist": "フワリ (Dream Monster)",
+      "composer": "フワリ (Dream Monster)",
+      "arranger": "フワリ (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/eev_9051s",
+      "album": "たいせつなもの",
+      "release_date": "2025-02-06",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/eev_9051s",
+      "verified_at": "2026-09-01"
+    },
+    "つよつよ最強エクササイズ": {
+      "performer": "花海佑芽",
+      "lyricist": "坪井リヒト（Bandai Namco Studio Inc.）",
+      "arranger": "坪井リヒト（Bandai Namco Studio Inc.）",
+      "composer": "坪井リヒト・佐藤貴文（Bandai Namco Studio Inc.）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/j9qlm74y2wt0",
+      "album": "つよつよ最強エクササイズ",
+      "release_date": "2025-04-01",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/j9qlm74y2wt0",
+      "verified_at": "2026-09-01"
+    },
+    "ときめきのソルフェージュ": {
+      "lyricist": "Cocoro. (Dream Monster)",
+      "composer": "田熊知存 (Dream Monster)",
+      "arranger": "田熊知存 (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/dyrwv7wvoi",
+      "album": "ときめきのソルフェージュ",
+      "release_date": "2025-03-19",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/dyrwv7wvoi",
+      "verified_at": "2026-09-01"
+    },
+    "ときめきのソルフェージュ [Instrumental]": {
+      "album": "倉本千奈 2nd Single「日々、発見的ステップ！」",
+      "release_date": "2025-03-19",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/2as3b8vv6",
+      "lyricist": "Cocoro. (Dream Monster)",
+      "composer": "田熊知存 (Dream Monster)",
+      "arranger": "田熊知存 (Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/dyrwv7wvoi",
+      "verified_at": "2026-09-01"
+    },
+    "ときめきエモーション": {
+      "lyricist": "神山羊",
+      "composer": "神山羊",
+      "arranger": "神山羊",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/zonhn1x2e3_u",
+      "album": "ときめきエモーション",
+      "release_date": "2026-04-02",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/zonhn1x2e3_u",
+      "verified_at": "2026-09-01"
+    },
+    "どきどきコンテスト": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "9",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "どたばたドタバタ": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "17",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "の～まね～ほ～む": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "28",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "はじまり": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "11",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "ふわふわ": {
+      "lyricist": "品川 樹",
+      "composer": "加藤弘也",
+      "arranger": "須藤幽玄、加藤弘也",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/1p96jr8yo5q",
+      "album": "ふわふわ",
+      "release_date": "2025-03-12",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/1p96jr8yo5q",
+      "verified_at": "2026-09-01"
+    },
+    "ふわふわ [Instrumental]": {
+      "album": "藤田ことね 2nd Single「Yellow Big Bang！」",
+      "release_date": "2025-03-12",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/4_x3vrtcp",
+      "lyricist": "品川 樹",
+      "composer": "加藤弘也",
+      "arranger": "須藤幽玄、加藤弘也",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/1p96jr8yo5q",
+      "verified_at": "2026-09-01"
+    },
+    "ままならなくて、いい": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "29",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "みちなるひろがる": {
+      "lyricist": "いよわ",
+      "composer": "いよわ",
+      "arranger": "いよわ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/154ebx5gl",
+      "album": "みちなるひろがる",
+      "release_date": "2026-01-28",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/154ebx5gl",
+      "verified_at": "2026-09-01"
+    },
+    "アイヴイ": {
+      "lyricist": "ツミキ",
+      "composer": "ツミキ",
+      "arranger": "ツミキ",
+      "performer": "月村手毬 (CV. 小鹿なお)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/87k2u7a36v",
+      "album": "アイヴイ",
+      "release_date": "2024-05-23",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/87k2u7a36v",
+      "verified_at": "2026-09-01"
+    },
+    "アイヴイ [Instrumental]": {
+      "album": "月村手毬 2nd Single「アイヴイ」",
+      "release_date": "2025-03-12",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/0556pr2zx",
+      "lyricist": "ツミキ",
+      "composer": "ツミキ",
+      "arranger": "ツミキ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/87k2u7a36v",
+      "verified_at": "2026-09-01"
+    },
+    "カクシタワタシ": {
+      "performer": "紫雲清夏",
+      "lyricist": "東 優太",
+      "composer": "東 優太",
+      "arranger": "東 優太",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/cbzji4pfpm",
+      "album": "カクシタワタシ",
+      "release_date": "2024-12-19",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/cbzji4pfpm",
+      "verified_at": "2026-09-01"
+    },
+    "カクシタワタシ [Instrumental]": {
+      "album": "紫雲清夏 2nd Single「カクシタワタシ」",
+      "release_date": "2025-03-26",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/st18m_ea89",
+      "lyricist": "東 優太",
+      "composer": "東 優太",
+      "arranger": "東 優太",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/cbzji4pfpm",
+      "verified_at": "2026-09-01"
+    },
+    "ガラクタロード": {
+      "lyricist": "Rou-hou",
+      "composer": "佐藤貴文",
+      "arranger": "鈴木俊介、大澤めい (Bandai Namco Studios Inc.)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/iqzxmun_0u",
+      "album": "ガラクタロード",
+      "release_date": "2026-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/iqzxmun_0u",
+      "verified_at": "2026-09-01"
+    },
+    "ガラクタロード [Instrumental]": {
+      "album": "初星学園 H.I.F Memorial Single 「ガラクタロード」",
+      "release_date": "2026-08-26",
+      "track_number": "15",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/jaayx6sfo",
+      "lyricist": "Rou-hou",
+      "composer": "佐藤貴文",
+      "arranger": "鈴木俊介、大澤めい (Bandai Namco Studios Inc.)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/iqzxmun_0u",
+      "verified_at": "2026-09-01"
+    },
+    "キミとセミブルー": {
+      "lyricist": "いつきおと",
+      "composer": "光増ハジメ（FirstCall）",
+      "arranger": "光増ハジメ（FirstCall）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/gdfqw-4qx",
+      "album": "キミとセミブルー",
+      "release_date": "2024-07-02",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/gdfqw-4qx",
+      "verified_at": "2026-09-01"
+    },
+    "キミとセミブルー [Instrumental]": {
+      "lyricist": "いつきおと",
+      "composer": "光増ハジメ（FirstCall）",
+      "arranger": "光増ハジメ（FirstCall）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/r2i7nkt36t",
+      "album": "Season Solo Collection Vol.1 「キミとセミブルー」",
+      "release_date": "2024-08-14",
+      "track_number": "11",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/r2i7nkt36t",
+      "verified_at": "2026-09-01"
+    },
+    "クライアイ": {
+      "lyricist": "松尾レミ",
+      "composer": "GLIM SPANKY",
+      "arranger": "亀本寛貴",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/ya43uj9wc",
+      "album": "クライアイ",
+      "release_date": "2026-08-01",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/ya43uj9wc",
+      "verified_at": "2026-09-01"
+    },
+    "グースーピー": {
+      "lyricist": "佐藤貴文 (Bandai Namco Studios Inc.)",
+      "composer": "佐藤貴文 (Bandai Namco Studios Inc.)",
+      "arranger": "佐藤貴文 (Bandai Namco Studios Inc.)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/c2afejkwkl",
+      "album": "グースーピー",
+      "release_date": "2025-11-29",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/c2afejkwkl",
+      "verified_at": "2026-09-01"
+    },
+    "グースーピー [Instrumental]": {
+      "album": "花海佑芽 2nd Single「グースーピー」",
+      "release_date": "2026-05-20",
+      "track_number": "06",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/rml297y3xm",
+      "lyricist": "佐藤貴文 (Bandai Namco Studios Inc.)",
+      "composer": "佐藤貴文 (Bandai Namco Studios Inc.)",
+      "arranger": "佐藤貴文 (Bandai Namco Studios Inc.)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/c2afejkwkl",
+      "verified_at": "2026-09-01"
+    },
+    "コンテンポラリのダンス": {
+      "lyricist": "真島ゆろ",
+      "composer": "真島ゆろ",
+      "arranger": "真島ゆろ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/tph2h53lhe",
+      "album": "コンテンポラリのダンス",
+      "release_date": "2025-03-19",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/tph2h53lhe",
+      "verified_at": "2026-09-01"
+    },
+    "コンテンポラリのダンス [Instrumental]": {
+      "album": "篠澤 広 2nd Single「コントラスト」",
+      "release_date": "2025-03-19",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/v4eyvosr1g",
+      "lyricist": "真島ゆろ",
+      "composer": "真島ゆろ",
+      "arranger": "真島ゆろ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/tph2h53lhe",
+      "verified_at": "2026-09-01"
+    },
+    "コントラスト": {
+      "lyricist": "佐々木恵梨",
+      "composer": "佐々木恵梨、鵜飼大幹、中村ヒロ",
+      "arranger": "中村ヒロ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/t81m3uu7_mm",
+      "album": "コントラスト",
+      "release_date": "2024-07-23",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/t81m3uu7_mm",
+      "verified_at": "2026-09-01"
+    },
+    "コントラスト [Instrumental]": {
+      "album": "篠澤 広 2nd Single「コントラスト」",
+      "release_date": "2025-03-19",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/v4eyvosr1g",
+      "lyricist": "佐々木恵梨",
+      "composer": "佐々木恵梨、鵜飼大幹、中村ヒロ",
+      "arranger": "中村ヒロ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/t81m3uu7_mm",
+      "verified_at": "2026-09-01"
+    },
+    "サンフェーデッド": {
+      "lyricist": "長谷川白紙",
+      "composer": "長谷川白紙",
+      "arranger": "長谷川白紙",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/x3t7fz33ba4",
+      "album": "サンフェーデッド",
+      "release_date": "2025-07-18",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/x3t7fz33ba4",
+      "verified_at": "2026-09-01"
+    },
+    "サンフェーデッド [Instrumental]": {
+      "album": "篠澤広 3rd Single「サンフェーデッド」",
+      "release_date": "2026-01-28",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/6h5etvdo4onp",
+      "lyricist": "長谷川白紙",
+      "composer": "長谷川白紙",
+      "arranger": "長谷川白紙",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/x3t7fz33ba4",
+      "verified_at": "2026-09-01"
+    },
+    "ツキノカメ": {
+      "performer": "秦谷美鈴",
+      "lyricist": "ミフメイ",
+      "composer": "ミフメイ",
+      "arranger": "ミフメイ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/mnwwto509nws",
+      "album": "ツキノカメ",
+      "release_date": "2025-02-07",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/mnwwto509nws",
+      "verified_at": "2026-09-01"
+    },
+    "ツキノカメ [Instrumental]": {
+      "album": "秦谷美鈴 1st Single「ツキノカメ」",
+      "release_date": "2025-05-21",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/noc3ooybi",
+      "lyricist": "ミフメイ",
+      "composer": "ミフメイ",
+      "arranger": "ミフメイ",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/mnwwto509nws",
+      "verified_at": "2026-09-01"
+    },
+    "トラブルメーカーズ": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "16",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "ハッピーミルフィーユ": {
+      "performer": "篠澤 広・十王星南・姫崎莉波",
+      "lyricist": "ナナホシ管弦楽団",
+      "arranger": "ナナホシ管弦楽団",
+      "composer": "岩見 陸",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/ibha41ntrkq",
+      "album": "ハッピーミルフィーユ",
+      "release_date": "2025-02-02",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/ibha41ntrkq",
+      "verified_at": "2026-09-01"
+    },
+    "ハッピーミルフィーユ [Instrumental]": {
+      "lyricist": "ナナホシ管弦楽団",
+      "arranger": "ナナホシ管弦楽団",
+      "composer": "岩見 陸",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/4rml5zvz69v",
+      "album": "Season Solo Collection Vol.5「ハッピーミルフィーユ」",
+      "release_date": "2025-02-14",
+      "track_number": "13",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/4rml5zvz69v",
+      "verified_at": "2026-09-01"
+    },
+    "パフォーマンス対決": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "10",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "プロデュース、開始！": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "2",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "ミラクルナナウ(ﾟ∀ﾟ)！": {
+      "lyricist": "YUC'e",
+      "composer": "YUC'e",
+      "arranger": "YUC'e",
+      "performer": "花海咲季・月村手毬・藤田ことね ver.",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/36vdaj1j0wh",
+      "album": "ミラクルナナウ(ﾟ∀ﾟ)！",
+      "release_date": "2024-08-24",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/36vdaj1j0wh",
+      "verified_at": "2026-09-01"
+    },
+    "ミラクルナナウ(ﾟ∀ﾟ)！ [Instrumental]": {
+      "album": "花海咲季 2nd Single「Boom Boom Pow」",
+      "release_date": "2025-03-12",
+      "track_number": "10",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/nx3bdngj1",
+      "lyricist": "YUC'e",
+      "composer": "YUC'e",
+      "arranger": "YUC'e",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/36vdaj1j0wh",
+      "verified_at": "2026-09-01"
+    },
+    "メクルメ": {
+      "lyricist": "フロクロ",
+      "composer": "フロクロ",
+      "arranger": "フロクロ",
+      "performer": "篠澤 広",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/30p5ttnh0",
+      "album": "メクルメ",
+      "release_date": "2024-12-21",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/30p5ttnh0",
+      "verified_at": "2026-09-01"
+    },
+    "ヨルニテ": {
+      "album": "秦谷美鈴 2nd Single「Superlative」",
+      "release_date": "2026-05-20",
+      "track_number": "02",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/dept3p1n-j",
+      "verified_at": "2026-09-01"
+    },
+    "ヨルニテ [Instrumental]": {
+      "album": "秦谷美鈴 2nd Single「Superlative」",
+      "release_date": "2026-05-20",
+      "track_number": "07",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/dept3p1n-j",
+      "verified_at": "2026-09-01"
+    },
+    "レッスンの日々": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "4",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "一体いつから": {
+      "lyricist": "大橋ちっぽけ",
+      "composer": "大橋ちっぽけ",
+      "arranger": "岩崎隆一",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/h7d7slo_tvu",
+      "album": "一体いつから",
+      "release_date": "2026-01-17",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/h7d7slo_tvu",
+      "verified_at": "2026-09-01"
+    },
+    "一体いつから [Instrumental]": {
+      "album": "月村手毬 3rd Single「一体いつから」",
+      "release_date": "2026-04-15",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/9hdgt01v7f",
+      "lyricist": "大橋ちっぽけ",
+      "composer": "大橋ちっぽけ",
+      "arranger": "岩崎隆一",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/h7d7slo_tvu",
+      "verified_at": "2026-09-01"
+    },
+    "世界一可愛い私": {
+      "lyricist": "HoneyWorks",
+      "composer": "HoneyWorks",
+      "arranger": "HoneyWorks",
+      "performer": "藤田ことね (CV. 飯田ヒカル)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/2zxpauv9qp",
+      "album": "世界一可愛い私",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/2zxpauv9qp",
+      "verified_at": "2026-09-01"
+    },
+    "世界一可愛い私 [Instrumental]": {
+      "album": "藤田ことね 1st Single「世界一可愛い私」",
+      "release_date": "2024-08-07",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/s61wq5i4aj55",
+      "lyricist": "HoneyWorks",
+      "composer": "HoneyWorks",
+      "arranger": "HoneyWorks",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/2zxpauv9qp",
+      "verified_at": "2026-09-01"
+    },
+    "仮装狂騒曲": {
+      "lyricist": "TOPHAMHAT-KYO (FAKE TYPE.)",
+      "composer": "FAKE TYPE.",
+      "arranger": "DYES IWASAKI (FAKE TYPE.)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/2ngkuekbb_fx",
+      "performer": "月村手毬・篠澤広・倉本千奈",
+      "album": "仮装狂騒曲",
+      "release_date": "2024-10-01",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/2ngkuekbb_fx",
+      "verified_at": "2026-09-01"
+    },
+    "仮装狂騒曲 [Instrumental]": {
+      "lyricist": "TOPHAMHAT-KYO (FAKE TYPE.)",
+      "composer": "FAKE TYPE.",
+      "arranger": "DYES IWASAKI (FAKE TYPE.)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/x1msuxs47m",
+      "album": "Season Solo Collection Vol.3「仮装狂騒曲」",
+      "release_date": "2024-11-13",
+      "track_number": "11",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/x1msuxs47m",
+      "verified_at": "2026-09-01"
+    },
+    "何かがはじまる予感": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "23",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "優雅たれ": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "24",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "光景": {
+      "lyricist": "長谷川白紙",
+      "composer": "長谷川白紙",
+      "arranger": "長谷川白紙",
+      "performer": "篠澤 広 (CV. 川村玲奈)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/qfvmosby0",
+      "album": "光景",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/qfvmosby0",
+      "verified_at": "2026-09-01"
+    },
+    "光景 [Instrumental]": {
+      "album": "篠澤広 1st Single「光景」",
+      "release_date": "2024-09-25",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/3o6clnn96",
+      "lyricist": "長谷川白紙",
+      "composer": "長谷川白紙",
+      "arranger": "長谷川白紙",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/qfvmosby0",
+      "verified_at": "2026-09-01"
+    },
+    "冠菊": {
+      "lyricist": "大山恭子 (Rebrast)",
+      "composer": "早川博隆 (Rebrast)、河原レオ (Rebrast)",
+      "arranger": "河原レオ (Rebrast)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/totulvzn50d1",
+      "album": "冠菊",
+      "release_date": "2024-08-02",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/totulvzn50d1",
+      "verified_at": "2026-09-01"
+    },
+    "冠菊 [Instrumental]": {
+      "lyricist": "大山恭子 (Rebrast)",
+      "composer": "早川博隆 (Rebrast)、河原レオ (Rebrast)",
+      "arranger": "河原レオ (Rebrast)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/0j-irlug45k",
+      "album": "Season Solo Collection Vol.2 「冠菊」",
+      "release_date": "2024-08-14",
+      "track_number": "11",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/0j-irlug45k",
+      "verified_at": "2026-09-01"
+    },
+    "初 [Instrumental]": {
+      "album": "花海咲季 1st Single「Fighting My Way」",
+      "release_date": "2024-08-07",
+      "track_number": "5",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/1qmj4mrhub",
+      "lyricist": "原口沙輔",
+      "composer": "原口沙輔",
+      "arranger": "宮川 弾、原口沙輔",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/peq6ooiqakm",
+      "verified_at": "2026-09-01"
+    },
+    "初（はじめ）": {
+      "lyricist": "原口沙輔",
+      "composer": "原口沙輔",
+      "arranger": "宮川 弾、原口沙輔",
+      "performer": "初星学園",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/peq6ooiqakm",
+      "album": "初",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/peq6ooiqakm",
+      "verified_at": "2026-09-01"
+    },
+    "努力の成果を見せる時！": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "7",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "古今東西ちょちょいのちょい": {
+      "performer": "花海咲季・月村手毬・藤田ことね ver.",
+      "lyricist": "大澤めい（バンダイナムコスタジオ）",
+      "composer": "大澤めい（バンダイナムコスタジオ）",
+      "arranger": "大澤めい（バンダイナムコスタジオ）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/3trpzlw5fki0",
+      "album": "古今東西ちょちょいのちょい",
+      "release_date": "2024-10-30",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/3trpzlw5fki0",
+      "verified_at": "2026-09-01"
+    },
+    "叶えたい、ことばかり": {
+      "lyricist": "田中透真(Dream Monster)",
+      "composer": "田中透真(Dream Monster)",
+      "arranger": "田中透真(Dream Monster)",
+      "performer": "月村手毬(CV.小鹿なお)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/7i1k50ldg",
+      "album": "叶えたい、ことばかり",
+      "release_date": "2024-06-03",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/7i1k50ldg",
+      "verified_at": "2026-09-01"
+    },
+    "夕暮れ時": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "21",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "小さな野望": {
+      "performer": "十王星南",
+      "lyricist": "小室みつ子",
+      "composer": "椎名 豪",
+      "arranger": "椎名 豪",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/uyu_3uvq-mjn",
+      "album": "小さな野望",
+      "release_date": "2024-11-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/uyu_3uvq-mjn",
+      "verified_at": "2026-09-01"
+    },
+    "小さな野望 [Instrumental]": {
+      "album": "十王星南 1st Single「小さな野望」",
+      "release_date": "2025-02-19",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/t1f8-92ky",
+      "lyricist": "小室みつ子",
+      "composer": "椎名 豪",
+      "arranger": "椎名 豪",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/uyu_3uvq-mjn",
+      "verified_at": "2026-09-01"
+    },
+    "幕間にキミと": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "34",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "憧れをいっぱい": {
+      "lyricist": "高木龍一(Dream Monster)",
+      "composer": "高木龍一(Dream Monster)",
+      "arranger": "高木龍一(Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/cbut20vazxu",
+      "album": "憧れをいっぱい",
+      "release_date": "2024-08-01",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/cbut20vazxu",
+      "verified_at": "2026-09-01"
+    },
+    "教室でのひととき": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "1",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "日々、発見的ステップ！": {
+      "lyricist": "椿山日南子(Dream Monster)",
+      "composer": "椿山日南子(Dream Monster)",
+      "arranger": "椿山日南子(Dream Monster)",
+      "performer": "倉本千奈",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/grepo_5d_d",
+      "album": "日々、発見的ステップ！",
+      "release_date": "2024-08-23",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/grepo_5d_d",
+      "verified_at": "2026-09-01"
+    },
+    "日々、発見的ステップ！ [Instrumental]": {
+      "album": "倉本千奈 2nd Single「日々、発見的ステップ！」",
+      "release_date": "2025-03-19",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/2as3b8vv6",
+      "lyricist": "椿山日南子(Dream Monster)",
+      "composer": "椿山日南子(Dream Monster)",
+      "arranger": "椿山日南子(Dream Monster)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/grepo_5d_d",
+      "verified_at": "2026-09-01"
+    },
+    "最終試験に向けて": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "3",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "桜フォトグラフ": {
+      "performer": "葛城リーリヤ、紫雲清夏、花海咲季",
+      "lyricist": "Safari Natsukawa",
+      "composer": "春川仁志(sixth floor)",
+      "arranger": "春川仁志(sixth floor)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/3k1lxe-sqcy3",
+      "album": "桜フォトグラフ",
+      "release_date": "2025-04-02",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/3k1lxe-sqcy3",
+      "verified_at": "2026-09-01"
+    },
+    "桜フォトグラフ [Instrumental]": {
+      "lyricist": "Safari Natsukawa",
+      "composer": "春川仁志(sixth floor)",
+      "arranger": "春川仁志(sixth floor)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/kv_xechx7k9",
+      "album": "Season Solo Collection Vol.7「桜フォトグラフ」",
+      "release_date": "2025-04-09",
+      "track_number": "13",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/kv_xechx7k9",
+      "verified_at": "2026-09-01"
+    },
+    "極光": {
+      "lyricist": "重永亮介",
+      "composer": "重永亮介",
+      "arranger": "重永亮介",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/zk2flfj71",
+      "album": "極光",
+      "release_date": "2025-03-22",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/zk2flfj71",
+      "verified_at": "2026-09-01"
+    },
+    "極光 [Instrumental]": {
+      "album": "葛城リーリヤ 2nd Single「極光」",
+      "release_date": "2025-03-26",
+      "track_number": "6",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/69p2zmxk5",
+      "lyricist": "重永亮介",
+      "composer": "重永亮介",
+      "arranger": "重永亮介",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/zk2flfj71",
+      "verified_at": "2026-09-01"
+    },
+    "楽しい学園生活": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "13",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "次への一歩": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "25",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "歌声は君いろ": {
+      "lyricist": "栗山健太、渡辺ほのか",
+      "composer": "田中ひなの（IKW）",
+      "arranger": "田中ひなの（IKW）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/781u1r8bi",
+      "album": "歌声は君いろ",
+      "release_date": "2025-03-26",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/781u1r8bi",
+      "verified_at": "2026-09-01"
+    },
+    "歌声は君いろ [Instrumental]": {
+      "album": "姫崎莉波 2nd Single「L.U.V」",
+      "release_date": "2025-03-26",
+      "track_number": "7",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/0vlnslseibti",
+      "lyricist": "栗山健太、渡辺ほのか",
+      "composer": "田中ひなの（IKW）",
+      "arranger": "田中ひなの（IKW）",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/781u1r8bi",
+      "verified_at": "2026-09-01"
+    },
+    "波乱の幕開け": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "15",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "無垢な思い、強き願い": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "31",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "無敵のお姉ちゃん": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "26",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "理論武装して": {
+      "lyricist": "松隈ケンタ、GBB あやか",
+      "composer": "松隈ケンタ",
+      "arranger": "SCRAMBLES",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/0mm8rxabi",
+      "album": "理論武装して",
+      "release_date": "2025-11-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/0mm8rxabi",
+      "verified_at": "2026-09-01"
+    },
+    "理論武装して [Instrumental]": {
+      "album": "雨夜 燕 1st Single「理論武装して」",
+      "release_date": "2026-02-25",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/ufncogar2m",
+      "lyricist": "松隈ケンタ、GBB あやか",
+      "composer": "松隈ケンタ",
+      "arranger": "SCRAMBLES",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/0mm8rxabi",
+      "verified_at": "2026-09-01"
+    },
+    "生徒たちの日常": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "12",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "白線": {
+      "lyricist": "ナユタン星人",
+      "composer": "ナユタン星人",
+      "arranger": "ナユタン星人",
+      "performer": "葛城リーリヤ (CV. 花岩香奈)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/0c9lqwlsq1",
+      "album": "白線",
+      "release_date": "2024-05-16",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/0c9lqwlsq1",
+      "verified_at": "2026-09-01"
+    },
+    "白線 [Instrumental]": {
+      "album": "葛城リーリヤ 1st Single「白線」",
+      "release_date": "2024-08-28",
+      "track_number": "4 ",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/bhjl7ii8xw",
+      "lyricist": "ナユタン星人",
+      "composer": "ナユタン星人",
+      "arranger": "ナユタン星人",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/0c9lqwlsq1",
+      "verified_at": "2026-09-01"
+    },
+    "真っ白いページと水彩の主人公": {
+      "lyricist": "佐藤貴文",
+      "composer": "佐藤貴文",
+      "arranger": "半田 翼",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/ltv_g0vm-fb1",
+      "album": "真っ白いページと水彩の主人公",
+      "release_date": "2026-04-11",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/ltv_g0vm-fb1",
+      "verified_at": "2026-09-01"
+    },
+    "秘めた想い": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "20",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "空と約束": {
+      "lyricist": "大森祥子",
+      "composer": "Evan Call",
+      "arranger": "Evan Call",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/gb2wwjvdf6_5",
+      "album": "空と約束",
+      "release_date": "2025-10-22",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/gb2wwjvdf6_5",
+      "verified_at": "2026-09-01"
+    },
+    "空と約束 [Instrumental]": {
+      "album": "倉本千奈 3rd Single「空と約束」",
+      "release_date": "2026-04-15",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/mcdmajeia",
+      "lyricist": "大森祥子",
+      "composer": "Evan Call",
+      "arranger": "Evan Call",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/gb2wwjvdf6_5",
+      "verified_at": "2026-09-01"
+    },
+    "自己肯定感爆上げ↑↑しゅきしゅきソング": {
+      "lyricist": "ヒゲドライバー",
+      "composer": "ヒゲドライバー",
+      "arranger": "ヒゲドライバー",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/fsuljh_pgyk1",
+      "album": "自己肯定感爆上げ↑↑しゅきしゅきソング",
+      "release_date": "2025-08-13",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/fsuljh_pgyk1",
+      "verified_at": "2026-09-01"
+    },
+    "自己肯定感爆上げ↑↑しゅきしゅきソング [Instrumental]": {
+      "album": "藤田ことね 3rd Single「自己肯定感爆上げ↑↑しゅきしゅきソング」",
+      "release_date": "2026-01-28",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/5riq8zp39nxy",
+      "lyricist": "ヒゲドライバー",
+      "composer": "ヒゲドライバー",
+      "arranger": "ヒゲドライバー",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/fsuljh_pgyk1",
+      "verified_at": "2026-09-01"
+    },
+    "葛藤": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "19",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "裏腹ストイック": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "27",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "見て": {
+      "lyricist": "kamome sano",
+      "composer": "kamome sano",
+      "arranger": "kamome sano",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/o9eps4fmwtbv",
+      "album": "見て",
+      "release_date": "2025-11-01",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/o9eps4fmwtbv",
+      "verified_at": "2026-09-01"
+    },
+    "見て [Instrumental]": {
+      "album": "有村麻央 3rd Single「見て」",
+      "release_date": "2026-04-15",
+      "track_number": "4",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/9rovyij60pyh",
+      "lyricist": "kamome sano",
+      "composer": "kamome sano",
+      "arranger": "kamome sano",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/o9eps4fmwtbv",
+      "verified_at": "2026-09-01"
+    },
+    "赤裸々": {
+      "lyricist": "岩里祐穂",
+      "composer": "岡部啓一(MONACA)",
+      "arranger": "岡部啓一(MONACA)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/v7lyoegj11",
+      "album": "赤裸々",
+      "release_date": "2026-02-10",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/v7lyoegj11",
+      "verified_at": "2026-09-01"
+    },
+    "追い込め～！": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "5",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "金の斧、銀の斧、エメラルドの斧": {
+      "album": "花海佑芽 2nd Single「グースーピー」",
+      "release_date": "2026-05-20",
+      "track_number": "02",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/rml297y3xm",
+      "verified_at": "2026-09-01"
+    },
+    "金の斧、銀の斧、エメラルドの斧 [Instrumental]": {
+      "album": "花海佑芽 2nd Single「グースーピー」",
+      "release_date": "2026-05-20",
+      "track_number": "07",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/rml297y3xm",
+      "verified_at": "2026-09-01"
+    },
+    "陽はまた昇る": {
+      "album": "学園アイドルマスター オリジナルサウンドトラック",
+      "release_date": "2024-05-17",
+      "track_number": "22",
+      "source_url": "https://gamemusic.bn-ent.net/release/680/",
+      "verified_at": "2026-09-01"
+    },
+    "雨上がりのアイリス": {
+      "performer": "Re;IRIS",
+      "lyricist": "こだまさおり",
+      "composer": "神前 暁(MONACA)",
+      "arranger": "神前 暁(MONACA)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/tvfg1zbuwe5",
+      "album": "雨上がりのアイリス",
+      "release_date": "2025-05-02",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/tvfg1zbuwe5",
+      "verified_at": "2026-09-01"
+    },
+    "雨上がりのアイリス [Instrumental]": {
+      "album": "Re;IRIS 1st Single 「雨上がりのアイリス」",
+      "release_date": "2025-11-19",
+      "track_number": "5",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/248cnosqvg",
+      "lyricist": "こだまさおり",
+      "composer": "神前 暁(MONACA)",
+      "arranger": "神前 暁(MONACA)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/tvfg1zbuwe5",
+      "verified_at": "2026-09-01"
+    },
+    "雪解けに": {
+      "performer": "有村麻央、倉本千奈、月村手毬",
+      "lyricist": "大山恭子 (Rebrast)",
+      "composer": "河原レオ (Rebrast)",
+      "arranger": "河原レオ (Rebrast)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/muw9595fwfz8",
+      "album": "雪解けに",
+      "release_date": "2025-03-01",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/muw9595fwfz8",
+      "verified_at": "2026-09-01"
+    },
+    "雪解けに [Instrumental]": {
+      "lyricist": "大山恭子 (Rebrast)",
+      "composer": "河原レオ (Rebrast)",
+      "arranger": "河原レオ (Rebrast)",
+      "credit_source_url": "https://gakuen-label.idolmaster-official.jp/discography/mgcw0r0th-q",
+      "album": "Season Solo Collection Vol.6「雪解けに」",
+      "release_date": "2025-03-03",
+      "track_number": "13",
+      "source_url": "https://gakuen-label.idolmaster-official.jp/discography/mgcw0r0th-q",
+      "verified_at": "2026-09-01"
+    }
+  }
+}

@@ -104,7 +104,11 @@ def run_scan(args: argparse.Namespace) -> int:
         mode="online" if args.online else "local_preferred",
         online_fallback=False if args.manifest else True,
     )
-    groups = scan_music_assets(manifest, store.load_mapping("song_names.json"))
+    groups = scan_music_assets(
+        manifest,
+        store.load_mapping("song_names.json"),
+        store.load_song_metadata(),
+    )
     kinds = Counter(group.data_type for group in groups)
     hrnm_018 = [
         group
@@ -150,6 +154,8 @@ def run_scan(args: argparse.Namespace) -> int:
                 "short_version": group.is_short_version,
                 "formats": sorted(group.assets),
                 "artwork": group.artwork.name if group.artwork else None,
+                "composer": group.metadata.composer or None,
+                "album": group.metadata.album or None,
             }
             for group in groups[: max(args.limit, 0)]
         ],
@@ -168,6 +174,7 @@ def run_acceptance_test(args: argparse.Namespace) -> int:
     from mutagen.id3 import ID3
 
     from core.audio import (
+        measure_wav_loudness,
         read_flac_embedded_artwork,
         read_flac_tags,
         read_mp3_embedded_artwork,
@@ -186,7 +193,12 @@ def run_acceptance_test(args: argparse.Namespace) -> int:
         mode="local_preferred",
         online_fallback=False,
     )
-    groups = scan_music_assets(manifest, ConfigStore().load_mapping("song_names.json"))
+    store = ConfigStore()
+    groups = scan_music_assets(
+        manifest,
+        store.load_mapping("song_names.json"),
+        store.load_song_metadata(),
+    )
     general = next(
         group
         for group in groups
@@ -251,6 +263,8 @@ def run_acceptance_test(args: argparse.Namespace) -> int:
         general_wav_pcm = (stream.getframerate(), stream.getnchannels(), stream.getnframes())
     with wave.open(io.BytesIO(live_wav_data)) as stream:
         live_wav_pcm = (stream.getframerate(), stream.getnchannels(), stream.getnframes())
+    general_loudness = measure_wav_loudness(general_wav_data)
+    live_loudness = measure_wav_loudness(live_wav_data)
     checks = {
         "general_awb": general_awb.exists() and general_awb.read_bytes()[:4] == b"AFS2",
         "general_wav": general_wav.exists() and general_wav.read_bytes()[:4] in {b"RIFF", b"RF64"},
@@ -299,15 +313,38 @@ def run_acceptance_test(args: argparse.Namespace) -> int:
                 live_flac_file.info.total_samples,
             ) == live_wav_pcm
         ),
-        "no_album_tag": "IPRD" not in general_tags and "IPRD" not in live_tags,
-        "no_mp3_album_tag": general_mp3_tags is not None and not general_mp3_tags.getall("TALB"),
-        "no_flac_album_tag": "album" not in general_flac_tags and "album" not in live_flac_tags,
+        "general_wav_loudness": (
+            -14.15 <= general_loudness.integrated_lufs <= -13.85
+            and general_loudness.true_peak_dbtp <= -0.9
+        ),
+        "live_wav_loudness": (
+            -14.15 <= live_loudness.integrated_lufs <= -13.85
+            and live_loudness.true_peak_dbtp <= -0.9
+        ),
+        "general_wav_official_album": general_tags.get("IPRD") == general.metadata.album,
+        "general_wav_official_composer": general_tags.get("IMUS") == general.metadata.composer,
+        "general_mp3_official_album": (
+            general_mp3_tags is not None
+            and str(general_mp3_tags.get("TALB", "")) == general.metadata.album
+        ),
+        "general_flac_official_album": (
+            general_flac_tags.get("album") == general.metadata.album
+        ),
+        "general_flac_official_composer": (
+            general_flac_tags.get("composer") == general.metadata.composer
+        ),
     }
     payload = {
         "ok": all(checks.values()),
         "source": info.source,
         "revision": info.revision,
         "checks": checks,
+        "loudness": {
+            "general_lufs": general_loudness.integrated_lufs,
+            "general_true_peak_dbtp": general_loudness.true_peak_dbtp,
+            "live_lufs": live_loudness.integrated_lufs,
+            "live_true_peak_dbtp": live_loudness.true_peak_dbtp,
+        },
         "written": [str(path) for path in written],
     }
     _emit_report(payload, args.report)
