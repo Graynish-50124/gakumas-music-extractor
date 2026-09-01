@@ -4,6 +4,8 @@
 
 ## 1.3.1 - 2026-09-01
 
+- ビルド環境のPATHから無関係なICU DLLが混入し、QtWidgetsを読み込めない問題を修正
+- 自己診断でQtWidgetsの読込・ウィンドウ生成まで確認し、GUI起動不能を検出可能に変更
 - WAV／FLACの聴感上の音量を-14 LUFSへそろえるラウドネス正規化を追加（既定ON）
 - True Peakを最大-1 dBTPに抑えて音割れを防ぎ、曲中の強弱を可能な限り維持
 - 元AWB／ACB／Manifest収録MP3は変更せず、WAVとFLACだけへ選択的に適用

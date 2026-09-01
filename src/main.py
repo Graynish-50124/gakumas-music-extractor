@@ -64,6 +64,25 @@ def run_self_test(report_path: str | None) -> int:
     except Exception as exc:
         errors.append(f"Pythonモジュール: {exc}")
 
+    try:
+        from PySide6.QtWidgets import QApplication, QWidget
+
+        app = QApplication.instance() or QApplication([])
+        probe = QWidget()
+        probe.setWindowTitle("Gakumas Music Extractor GUI self-test")
+        probe.resize(320, 120)
+        probe.show()
+        app.processEvents()
+        result["QtWidgets"] = {
+            "ok": True,
+            "platform": app.platformName(),
+            "visible": probe.isVisible(),
+        }
+        probe.close()
+        app.processEvents()
+    except Exception as exc:
+        errors.append(f"Qt GUI: {type(exc).__name__}: {exc}")
+
     paths = component_paths()
     result["components"] = {name: str(path) if path else None for name, path in paths.items()}
     for name, path in paths.items():

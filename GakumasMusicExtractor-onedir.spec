@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import sys
 
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
@@ -43,6 +44,28 @@ a = Analysis(
     noarchive=False,
     optimize=1,
 )
+
+# PyInstaller searches PATH while resolving native DLLs.  A build shell may
+# contain unrelated tools (Poppler, ImageMagick, etc.) with DLL names that also
+# exist in Windows, such as icuuc.dll.  Bundling one of those files makes Qt
+# load the wrong ABI and QtWidgets fails with Windows error 127.  All legitimate
+# native dependencies for this standalone build must originate from the
+# project/venv, the base Python installation, or Windows itself.
+allowed_binary_roots = [
+    project.resolve(),
+    Path(sys.prefix).resolve(),
+    Path(sys.base_prefix).resolve(),
+    Path(os.environ.get("SystemRoot", r"C:\Windows")).resolve(),
+]
+unexpected_binaries = [
+    (destination, source)
+    for destination, source, _kind in a.binaries
+    if not any(Path(source).resolve().is_relative_to(root) for root in allowed_binary_roots)
+]
+if unexpected_binaries:
+    details = "\n".join(f"  {destination}: {source}" for destination, source in unexpected_binaries)
+    raise RuntimeError(f"PATH由来の外部DLLを検出しました。build.ps1を使用してください:\n{details}")
+
 pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
